@@ -245,7 +245,10 @@ def build(args):
     gen = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     sep = "── our fork's lite is here"
     if binfo:
-        sep += ': <a href="%s/commit/%s">%s</a>, %s ──' % (UPSTREAM, binfo["sha"], subject_html(binfo["subject"]), esc(binfo["date"][:10]))
+        m = PR.search(binfo["subject"])
+        pr = (' (<a href="%s/pull/%s">#%s</a>)' % (UPSTREAM, m.group(1), m.group(1))) if m else ""
+        sep += ': <a href="%s/commit/%s">%s</a>%s, %s ──' % (
+            UPSTREAM, binfo["sha"], esc(strip_pr(binfo["subject"])), pr, esc(binfo["date"][:10]))
     else:
         sep += " (no upstream commit of main found in lite) ──"
     page = [
