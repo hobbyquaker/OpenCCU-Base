@@ -1,0 +1,162 @@
+name: filtered
+
+# Keeps the branch `filtered` current: OpenCCU/OpenCCU-Base's main limited to the paths openccu-lite
+# builds from, so what upstream changes in the components openccu-lite ships can be read without the
+# rest. Commits that touch none of the paths are left out, mixed commits keep only their changes on
+# the paths; messages, authors and dates are upstream's, and every commit ends with the trailer
+#   Upstream-Commit: OpenCCU/OpenCCU-Base@<short> https://github.com/OpenCCU/OpenCCU-Base/commit/<full>
+# naming the commit it came from (for cherry-picks).
+#
+# The path list is openccu-lite's, fetched at run time from its main (one source of truth):
+#   buildroot-external/package/openccu-base/openccu-base-paths.txt
+# The filter (.github/filtered/filter.sh, git filter-repo pinned by version and checksum) is
+# deterministic: a run on a longer upstream history fast-forwards `filtered`. When the path list
+# or the filter changes, the whole history is rewritten and `filtered` is force-updated - it is a
+# read-only view; the run summary says so.
+#
+# The report (.github/filtered/report.py) goes to the branch `gh-pages`, served by GitHub Pages:
+# the filtered commits newest first with a line where the fork's `lite` stands, and which commits
+# are new. state.json there remembers which upstream commits earlier runs have seen.
+#
+# This workflow lives on `main` only because scheduled workflows run from the default branch.
+# It pushes `filtered` and `gh-pages` and nothing else: never main, lite or a tag.
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: filtered
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_URL: https://github.com/OpenCCU/OpenCCU-Base.git
+  PATHS_REPO: hobbyquaker/openccu-lite
+  PATHS_REF: main
+  PATHS_FILE: buildroot-external/package/openccu-base/openccu-base-paths.txt
+  # git-filter-repo is one Python file; pinned by tag and checksum so the filter stays deterministic.
+  FILTER_REPO_VERSION: v2.47.0
+  FILTER_REPO_SHA256: 67447413e273fc76809289111748870b6f6072f08b17efe94863a92d810b7d94
+
+jobs:
+  filtered:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the tools
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: tools
+          sparse-checkout: .github/filtered
+          persist-credentials: false
+
+      - name: Install git-filter-repo
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/bin"
+          curl -fsSL -o "$RUNNER_TEMP/bin/git-filter-repo" \
+            "https://raw.githubusercontent.com/newren/git-filter-repo/${FILTER_REPO_VERSION}/git-filter-repo"
+          echo "${FILTER_REPO_SHA256}  $RUNNER_TEMP/bin/git-filter-repo" | sha256sum -c -
+          chmod +x "$RUNNER_TEMP/bin/git-filter-repo"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Test the filter and the report
+        run: python3 -I tools/.github/filtered/test_report.py
+
+      - name: Fetch the path list
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          sha=$(gh api "repos/${PATHS_REPO}/commits?path=${PATHS_FILE}&sha=${PATHS_REF}&per_page=1" --jq '.[0].sha')
+          [ -n "$sha" ] && [ "$sha" != null ]
+          curl -fsSL -o paths.txt "https://raw.githubusercontent.com/${PATHS_REPO}/${sha}/${PATHS_FILE}"
+          echo "PATHS_COMMIT=$sha" >> "$GITHUB_ENV"
+          echo "path list: ${PATHS_REPO}@${sha} $(sha256sum < paths.txt | cut -c1-16)"
+
+      - name: Clone upstream and the fork's lite
+        run: |
+          set -euo pipefail
+          git clone --quiet --single-branch --branch main "$UPSTREAM_URL" up
+          git -C up fetch --quiet "https://github.com/${GITHUB_REPOSITORY}.git" '+refs/heads/lite:refs/heads/lite'
+          git -C up log -1 --format='upstream main: %H %cI' main
+          git -C up log -1 --format='fork lite: %H %cI' lite
+          git clone --quiet --no-local --single-branch --branch main up fl
+
+      - name: Filter
+        run: |
+          set -euo pipefail
+          bash tools/.github/filtered/filter.sh fl paths.txt
+          git -C fl log -1 --format='filtered: %H' main
+
+      - name: Push filtered
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd fl
+          origin="https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          new=$(git rev-parse main)
+          old=$(git ls-remote "$origin" refs/heads/filtered | cut -f1)
+          {
+            echo "### Branch filtered"
+            echo
+            if [ -z "$old" ]; then
+              git push --quiet "$origin" "$new:refs/heads/filtered"
+              echo "Created at \`$new\` ($(git rev-list --count "$new") commits)."
+            elif [ "$old" = "$new" ]; then
+              echo "Up to date at \`$new\`."
+            elif git merge-base --is-ancestor "$old" "$new" 2>/dev/null; then
+              git push --quiet "$origin" "$new:refs/heads/filtered"
+              echo "Fast-forwarded \`${old:0:10}\` → \`${new:0:10}\` ($(git rev-list --count "$old..$new") new commits)."
+            else
+              git push --quiet --force-with-lease="refs/heads/filtered:$old" "$origin" "$new:refs/heads/filtered"
+              rewritten=1
+              echo "**Rewritten** \`${old:0:10}\` → \`${new:0:10}\`: the path list (now \`${PATHS_COMMIT:0:10}\`), the filter or upstream's history changed, so every id changed. Force-updated; the branch is a read-only view."
+            fi
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${rewritten:-}" ]; then
+            echo "::warning::filtered was rewritten (the path list, the filter or upstream's history changed): ${old} -> ${new}"
+          fi
+
+      - name: Report
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          origin="https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git init --quiet pages
+          cd pages
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add origin "$origin"
+          if git fetch --quiet --depth=1 origin gh-pages; then
+            git checkout --quiet -B gh-pages FETCH_HEAD
+          else
+            git checkout --quiet --orphan gh-pages
+          fi
+          cp state.json ../state-in.json 2>/dev/null || true
+          python3 -I ../tools/.github/filtered/report.py \
+            --filtered ../fl --upstream ../up --lite lite \
+            --paths ../paths.txt --paths-commit "$PATHS_COMMIT" \
+            --paths-url "https://github.com/${PATHS_REPO}/blob/${PATHS_COMMIT}/${PATHS_FILE}" \
+            --fork "$GITHUB_REPOSITORY" --state-in ../state-in.json --out .
+          touch .nojekyll
+          mv summary.md ../summary.md
+          cat ../summary.md >> "$GITHUB_STEP_SUMMARY"
+          owner=${GITHUB_REPOSITORY%%/*}
+          echo "Report: https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_STEP_SUMMARY"
+          git add index.html state.json .nojekyll
+          # a new generation time alone is not worth a commit
+          if git diff --cached --quiet -I '<dt>Generated</dt>' && git rev-parse -q --verify HEAD >/dev/null; then
+            echo "report unchanged"
+          else
+            git commit --quiet -m "report for upstream $(git -C ../up rev-parse --short=10 main), lite $(git -C ../up rev-parse --short=10 lite)"
+            git push --quiet origin HEAD:refs/heads/gh-pages
+          fi
