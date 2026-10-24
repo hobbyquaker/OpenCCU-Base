@@ -9,6 +9,8 @@ name: filtered
 #
 # The path list is openccu-lite's, fetched at run time from its main (one source of truth):
 #   buildroot-external/package/openccu-base/openccu-base-paths.txt
+# minus .github/filtered/exclude-paths.txt here: paths the build keeps but this view leaves out as
+# noise (everything below src/webui/, ReGaHss's ChangeLog), dropped in a second filter pass.
 # The filter (.github/filtered/filter.sh, git filter-repo pinned by version and checksum) is
 # deterministic: a run on a longer upstream history fast-forwards `filtered`. When the path list
 # or the filter changes, the whole history is rewritten and `filtered` is force-updated - it is a
@@ -91,7 +93,7 @@ jobs:
       - name: Filter
         run: |
           set -euo pipefail
-          bash tools/.github/filtered/filter.sh fl paths.txt
+          bash tools/.github/filtered/filter.sh fl paths.txt tools/.github/filtered/exclude-paths.txt
           git -C fl log -1 --format='filtered: %H' main
 
       - name: Push filtered
@@ -117,7 +119,7 @@ jobs:
             else
               git push --quiet --force-with-lease="refs/heads/filtered:$old" "$origin" "$new:refs/heads/filtered"
               rewritten=1
-              echo "**Rewritten** \`${old:0:10}\` → \`${new:0:10}\`: the path list (now \`${PATHS_COMMIT:0:10}\`), the filter or upstream's history changed, so every id changed. Force-updated; the branch is a read-only view."
+              echo "**Rewritten** \`${old:0:10}\` → \`${new:0:10}\`: the path list (now \`${PATHS_COMMIT:0:10}\`), the exclude list, the filter or upstream's history changed, so every id changed. Force-updated; the branch is a read-only view."
             fi
             echo
           } >> "$GITHUB_STEP_SUMMARY"
@@ -145,6 +147,7 @@ jobs:
           python3 -I ../tools/.github/filtered/report.py \
             --filtered ../fl --upstream ../up --lite lite \
             --paths ../paths.txt --paths-commit "$PATHS_COMMIT" \
+            --exclude ../tools/.github/filtered/exclude-paths.txt \
             --paths-url "https://github.com/${PATHS_REPO}/blob/${PATHS_COMMIT}/${PATHS_FILE}" \
             --fork "$GITHUB_REPOSITORY" --state-in ../state-in.json --out .
           touch .nojekyll

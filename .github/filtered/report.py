@@ -17,7 +17,8 @@ the fork's `lite`, and writes:
   1. an ancestor of lite (everything up to merge-base(lite, main)), or
   2. named by a lite commit's "(cherry picked from commit <sha>)" line or Upstream-Commit: trailer, or
   3. the same change on our paths: the patch-id of the filtered commit (upstream's diff limited to
-     the paths file) equals the patch-id of a lite commit's diff limited to the same paths, or
+     the paths file minus the exclude file) equals the patch-id of a lite commit's diff limited the
+     same way, or
   4. the same subject: a lite commit's subject equals the upstream subject without its " (#N)"
      suffix (upstream squash-merges a PR of ours under the PR's title; the review may have changed
      the diff, so the patch-id differs).
@@ -50,21 +51,32 @@ class Paths:
     """git filter-repo's --paths-from-file matching: a literal path matches itself and everything
     below it, a "regex:" line matches at the start of the path."""
 
-    def __init__(self, text):
-        self.literal, self.regex = [], []
+    def __init__(self, text, exclude=""):
+        self.literal, self.regex = self.parse(text)
+        self.ex_literal, self.ex_regex = self.parse(exclude)
+
+    @staticmethod
+    def parse(text):
+        literal, regex = [], []
         for line in text.splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
             if line.startswith("regex:"):
-                self.regex.append(re.compile(line[len("regex:"):]))
+                regex.append(re.compile(line[len("regex:"):]))
             else:
-                self.literal.append(line.rstrip("/"))
+                literal.append(line.rstrip("/"))
+        return literal, regex
+
+    @staticmethod
+    def hit(path, literal, regex):
+        if any(path == p or path.startswith(p + "/") for p in literal):
+            return True
+        return any(r.match(path) for r in regex)
 
     def match(self, path):
-        if any(path == p or path.startswith(p + "/") for p in self.literal):
-            return True
-        return any(r.match(path) for r in self.regex)
+        """On the paths and not excluded: what the branch `filtered` keeps."""
+        return self.hit(path, self.literal, self.regex) and not self.hit(path, self.ex_literal, self.ex_regex)
 
 
 def patch_id(repo, diff):
@@ -194,7 +206,13 @@ details{font-size:.85em}summary{cursor:pointer;color:var(--mut)}.files{margin:4p
 
 def build(args):
     with open(args.paths, encoding="utf-8") as f:
-        paths = Paths(f.read())
+        text = f.read()
+    exclude = ""
+    if args.exclude:
+        with open(args.exclude, encoding="utf-8") as f:
+            exclude = f.read()
+    paths = Paths(text, exclude)
+    left_out = [l.strip() for l in exclude.splitlines() if l.strip() and not l.strip().startswith("#")]
     commits = filtered_commits(args.filtered, args.filtered_ref)
     taken, boundary, index = taken_by_lite(args.upstream, args.main, args.lite, paths, args.filtered, commits)
 
@@ -257,7 +275,7 @@ def build(args):
         "<title>OpenCCU-Base filtered</title><style>%s</style></head><body><main>" % CSS,
         "<h1>OpenCCU-Base, filtered to openccu-lite's paths</h1>",
         "<p class=\"lead\">Upstream <a href=\"%s/commits/main\">OpenCCU/OpenCCU-Base main</a> limited to the "
-        "paths openccu-lite builds from, newest first. Above the line: what upstream did after the newest commit "
+        "paths openccu-lite builds from (minus the few left out below), newest first. Above the line: what upstream did after the newest commit "
         "our fork's <code>lite</code> has (none of them is in <code>lite</code>); below it: the older ones (the latest %d), those <code>lite</code> skipped marked <em>not in lite</em>. The full history is the branch "
         "<a href=\"https://github.com/%s/commits/filtered\"><code>filtered</code></a>.</p>" % (UPSTREAM, OLDER_CAP, fork),
         "<dl class=\"facts\">",
@@ -267,6 +285,7 @@ def build(args):
         "<dt>Fork lite</dt><dd><a href=\"https://github.com/%s/commit/%s\"><code>%s</code></a></dd>" % (fork, lite_head, lite_head[:10]),
         "<dt>Paths file</dt><dd><a href=\"%s\">openccu-base-paths.txt</a> at <code>%s</code></dd>"
         % (esc(args.paths_url), esc(args.paths_commit[:10])),
+        "<dt>Left out</dt><dd>%s</dd>" % (", ".join("<code>%s</code>" % esc(x) for x in left_out) or "nothing"),
         "<dt>Not in lite</dt><dd>%d above the line, %d below it (skipped)</dd>" % (len(above), len(skipped)),
         "<dt>New</dt><dd>%s</dd>" % (("%d, first seen %s" % (len(new), esc(last_new_date))) if new else "none since the first run"),
         "</dl><ol>",
@@ -323,6 +342,7 @@ def main(argv=None):
     p.add_argument("--paths", required=True)
     p.add_argument("--paths-url", default="")
     p.add_argument("--paths-commit", default="")
+    p.add_argument("--exclude", help="the exclude file the filter's second pass used")
     p.add_argument("--fork", default="hobbyquaker/OpenCCU-Base")
     p.add_argument("--state-in")
     p.add_argument("--run-date", default=datetime.date.today().isoformat())

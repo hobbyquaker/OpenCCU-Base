@@ -16,6 +16,7 @@ sys.path.insert(0, HERE)
 import report  # noqa: E402
 
 PATHS = "# ours\nsrc/core/\nregex:^lib/(?!skip/)\n"
+EXCLUDE = "# noise\nsrc/core/lang/\n"
 
 
 def sh(repo, *args, env=None):
@@ -54,6 +55,8 @@ class Boundary(unittest.TestCase):
         c[3] = commit(up, "core: mixed, not taken", {"src/core/b.c": "1\n", "src/webui/x.js": "2\n"})
         c[4] = commit(up, "core: picked with a line", {"src/core/a.c": "2\n"})
         c[5] = commit(up, "lib: picked and adapted", {"lib/c.c": "1\n"})
+        c[10] = commit(up, "core: translations only", {"src/core/lang/de.js": "1\n"})
+        c[11] = commit(up, "core: mixed with translations", {"src/core/g.c": "1\n", "src/core/lang/de.js": "2\n"})
         c[6] = commit(up, "lib: skipped path only", {"lib/skip/d.c": "1\n"})
         c[7] = commit(up, "core: our PR, changed in review (#7)", {"src/core/e.c": "upstream\n"})
         c[8] = commit(up, "core: after lite (#8)", {"src/core/f.c": "1\n"})
@@ -66,14 +69,21 @@ class Boundary(unittest.TestCase):
         sh(up, "cherry-pick", "-x", c[4])
         commit(up, "lib: picked and adapted, with a lite-only file", {"lib/c.c": "1\n", "src/webui/lite.js": "1\n"})
         commit(up, "core: our PR, changed in review", {"src/core/e.c": "ours\n"})
+        # c11 taken without -x and with a translation of our own: the same change once the
+        # excluded paths are left out on both sides
+        commit(up, "core: g, with our translation", {"src/core/g.c": "1\n", "src/core/lang/de.js": "ours\n"})
         sh(up, "checkout", "-q", "main")
 
         cls.paths = os.path.join(t, "paths.txt")
         with open(cls.paths, "w", encoding="utf-8") as f:
             f.write(PATHS)
+        cls.exclude = os.path.join(t, "exclude.txt")
+        with open(cls.exclude, "w", encoding="utf-8") as f:
+            f.write(EXCLUDE)
         cls.fl = os.path.join(t, "fl")
         sh(t, "clone", "-q", "--no-local", "--single-branch", "--branch", "main", up, cls.fl)
-        subprocess.run(["bash", os.path.join(HERE, "filter.sh"), cls.fl, cls.paths], check=True, capture_output=True)
+        subprocess.run(["bash", os.path.join(HERE, "filter.sh"), cls.fl, cls.paths, cls.exclude],
+                       check=True, capture_output=True)
         cls.out = os.path.join(t, "out")
         os.mkdir(cls.out)
         cls.res = report.build(cls.args(None, "2026-02-01"))
@@ -86,6 +96,7 @@ class Boundary(unittest.TestCase):
         a.filtered, a.filtered_ref, a.upstream, a.main, a.lite = cls.fl, "main", cls.up, "main", "lite"
         a.paths, a.paths_url, a.paths_commit, a.fork = cls.paths, "u", "p" * 40, "me/fork"
         a.state_in, a.run_date, a.out = state, date, cls.out
+        a.exclude = getattr(cls, "exclude", None)
         return a
 
     @classmethod
@@ -95,12 +106,15 @@ class Boundary(unittest.TestCase):
     def test_filtered_history(self):
         subjects = sh(self.fl, "log", "--format=%s").splitlines()
         self.assertEqual(subjects, ["core: after lite (#8)", "core: our PR, changed in review (#7)",
-                                    "lib: picked and adapted", "core: picked with a line",
+                                    "core: mixed with translations", "lib: picked and adapted", "core: picked with a line",
                                     "core: mixed, not taken", "core: one"])
-        body = sh(self.fl, "log", "-1", "--format=%B", "main~4")
+        body = sh(self.fl, "log", "-1", "--format=%B", "main~5")
         self.assertIn("Upstream-Commit: OpenCCU/OpenCCU-Base@%s https://github.com/OpenCCU/OpenCCU-Base/commit/%s"
                       % (self.c[3][:10], self.c[3]), body)
-        self.assertEqual(sh(self.fl, "show", "--format=", "--name-only", "main~4"), "src/core/b.c")
+        self.assertEqual(sh(self.fl, "show", "--format=", "--name-only", "main~5"), "src/core/b.c")
+        # the excluded paths are gone, and with them the commit that touched nothing else
+        self.assertEqual(sh(self.fl, "show", "--format=", "--name-only", "main~2"), "src/core/g.c")
+        self.assertEqual(sh(self.fl, "log", "--format=%s", "--", "src/core/lang"), "")
 
     def test_taken(self):
         t, c = self.res["taken"], self.c
@@ -109,7 +123,8 @@ class Boundary(unittest.TestCase):
         self.assertTrue(t[c[4]].startswith("cherry-picked"))
         self.assertTrue(t[c[5]].startswith("same change as"))
         self.assertTrue(t[c[7]].startswith("same subject as"))
-        for n in (3, 6, 8, 9):
+        self.assertTrue(t[c[11]].startswith("same change as"))
+        for n in (3, 6, 8, 9, 10):
             self.assertNotIn(c[n], t)
         self.assertEqual(self.res["skipped"], [c[3]])
 

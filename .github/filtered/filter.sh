@@ -1,9 +1,11 @@
 #!/bin/bash
-# filter.sh <clone> <paths-file>: rewrites a fresh clone of OpenCCU/OpenCCU-Base (its main and tags,
+# filter.sh <clone> <paths-file> [<exclude-file>]: rewrites a fresh clone of OpenCCU/OpenCCU-Base (its main and tags,
 # nothing else) in place into the history of the branch `filtered`:
 #  - keeps only the paths the paths file names (git filter-repo's --paths-from-file format: a path
 #    matches itself and everything below it, "regex:" lines are Python regular expressions);
 #    commits that touch none of them vanish, mixed commits keep only their changes on those paths;
+#  - then, with an exclude file (the same format), drops those paths in a second pass
+#    (--invert-paths): commits that touched only them vanish, mixed ones keep the rest;
 #  - appends the trailer
 #      Upstream-Commit: OpenCCU/OpenCCU-Base@<short> https://github.com/OpenCCU/OpenCCU-Base/commit/<full>
 #    to every kept commit, naming the upstream commit it was rewritten from;
@@ -14,6 +16,10 @@ set -euo pipefail
 
 clone=${1:?usage: filter.sh <clone> <paths-file>}
 paths=$(cd "$(dirname "${2:?usage: filter.sh <clone> <paths-file>}")" && pwd -P)/$(basename "$2")
+exclude=
+if [ -n "${3:-}" ]; then
+	exclude=$(cd "$(dirname "$3")" && pwd -P)/$(basename "$3")
+fi
 filter_repo=${GIT_FILTER_REPO:-git-filter-repo}
 
 # The trailer joins the message's last paragraph when that already is a trailer block
@@ -39,3 +45,6 @@ cd "$clone"
 "$filter_repo" --force --quiet \
 	--paths-from-file "$paths" \
 	--commit-callback "$callback"
+if [ -n "$exclude" ]; then
+	"$filter_repo" --force --quiet --invert-paths --paths-from-file "$exclude"
+fi
