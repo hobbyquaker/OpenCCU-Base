@@ -11,6 +11,9 @@ the fork's `lite`, and writes:
     at OLDER_CAP entries;
   - state.json: the upstream commits seen so far, with the date of the run that first saw them, so
     a commit stays marked "new" until a later run brings newer ones;
+  - report.json: the page's facts for machines (openccu-lite's daily version report reads it): where
+    lite stands (the boundary) and the commits above the line, newest first, each with its upstream
+    commit, subject, PR, date and author;
   - summary.md: the run's summary for $GITHUB_STEP_SUMMARY.
 
 "Taken by lite" (the boundary detection) is, per upstream commit:
@@ -307,6 +310,20 @@ def build(args):
     with open(os.path.join(args.out, "state.json"), "w", encoding="utf-8") as f:
         json.dump({"seen": seen, "last_new": last_new, "last_new_date": last_new_date,
                    "paths_commit": args.paths_commit, "filtered_head": commits[0]["sha"] if commits else None},
+                  f, indent=1, sort_keys=True)
+        f.write("\n")
+
+    def entry(c):
+        m = PR.search(c["subject"])
+        return {"upstream": c["upstream"], "url": "%s/commit/%s" % (UPSTREAM, c["upstream"]),
+                "filtered": c["sha"], "subject": c["subject"], "pr": int(m.group(1)) if m else None,
+                "date": c["date"], "author": c["author"], "new": c["upstream"] in new}
+    with open(os.path.join(args.out, "report.json"), "w", encoding="utf-8") as f:
+        json.dump({"generated": gen,
+                   "upstream_main": up_head, "lite": lite_head,
+                   "boundary": dict(binfo, url="%s/commit/%s" % (UPSTREAM, binfo["sha"])) if binfo else None,
+                   "above": [entry(c) for c in above], "skipped_below": len(skipped),
+                   "filtered_commits": len(commits), "paths_commit": args.paths_commit},
                   f, indent=1, sort_keys=True)
         f.write("\n")
 

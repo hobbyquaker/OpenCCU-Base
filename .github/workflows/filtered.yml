@@ -18,7 +18,8 @@ name: filtered
 #
 # The report (.github/filtered/report.py) goes to the branch `gh-pages`, served by GitHub Pages:
 # the filtered commits newest first with a line where the fork's `lite` stands, and which commits
-# are new. state.json there remembers which upstream commits earlier runs have seen.
+# are new. state.json there remembers which upstream commits earlier runs have seen; report.json
+# holds the line and the commits above it for machines (openccu-lite's daily version report).
 #
 # This workflow lives on `main` only because scheduled workflows run from the default branch.
 # It pushes `filtered` and `gh-pages` and nothing else: never main, lite or a tag.
@@ -155,9 +156,9 @@ jobs:
           cat ../summary.md >> "$GITHUB_STEP_SUMMARY"
           owner=${GITHUB_REPOSITORY%%/*}
           echo "Report: https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_STEP_SUMMARY"
-          git add index.html state.json .nojekyll
+          git add index.html state.json report.json .nojekyll
           # a new generation time alone is not worth a commit
-          if git diff --cached --quiet -I '<dt>Generated</dt>' && git rev-parse -q --verify HEAD >/dev/null; then
+          if git diff --cached --quiet -I '<dt>Generated</dt>' -I '"generated": ' && git rev-parse -q --verify HEAD >/dev/null; then
             echo "report unchanged"
           else
             git commit --quiet -m "report for upstream $(git -C ../up rev-parse --short=10 main), lite $(git -C ../up rev-parse --short=10 lite)"

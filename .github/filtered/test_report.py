@@ -136,6 +136,14 @@ class Boundary(unittest.TestCase):
         self.assertLess(page.index("core: after lite"), page.index("our fork's lite is here"))
         self.assertLess(page.index("our fork's lite is here"), page.index("core: mixed, not taken"))
         self.assertIn('<span class="b tag">v1</span>', page)
+        with open(os.path.join(self.out, "report.json"), encoding="utf-8") as f:
+            rep = json.load(f)
+        self.assertEqual(rep["boundary"]["sha"], c[7])
+        self.assertEqual([x["upstream"] for x in rep["above"]], [c[8]])
+        self.assertEqual(rep["above"][0]["subject"], "core: after lite (#8)")
+        self.assertEqual(rep["above"][0]["pr"], 8)
+        self.assertEqual(rep["above"][0]["url"], "https://github.com/OpenCCU/OpenCCU-Base/commit/" + c[8])
+        self.assertEqual(rep["skipped_below"], 1)
 
     def test_new_marks(self):
         self.assertEqual(self.res["new"], [])
