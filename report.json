@@ -1,0 +1,26 @@
+{
+ "above": [
+  {
+   "author": "Jens Maus",
+   "date": "2026-10-19T23:18:51+01:00",
+   "filtered": "43aee9b3efa4674213967ad3e1f296aeec21a94c",
+   "new": false,
+   "pr": 222,
+   "subject": "webui: create default objects at startup and map functions by name (#222)",
+   "upstream": "67780e37036d398af13b48ae0b4ad38874c8b68c",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/67780e37036d398af13b48ae0b4ad38874c8b68c"
+  }
+ ],
+ "boundary": {
+  "date": "2026-10-13T23:34:42+02:00",
+  "sha": "423cde2b888e8b90fa0d9f990122f24525ce4666",
+  "subject": "libXmlRpc: regenerate the prebuilt libraries from the sources (#190)",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/423cde2b888e8b90fa0d9f990122f24525ce4666"
+ },
+ "filtered_commits": 413,
+ "generated": "2026-10-25 10:52 UTC",
+ "lite": "8b96a44a74011dd0822bc258863022032b6f67e2",
+ "paths_commit": "87378ab6c252c668c835b5daa525b5356f4e4d1a",
+ "skipped_below": 4,
+ "upstream_main": "b6796fe8101063f80f39e6f3b5c29b4ddfdf7c74"
+}
