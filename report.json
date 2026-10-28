@@ -1,15 +1,15 @@
 {
  "above": [],
  "boundary": {
-  "date": "2026-10-28T06:57:30+01:00",
-  "sha": "0aa528f60e59a2d7dee44a913c5abd07f4a9bc02",
-  "subject": "libhsscomm: bound the init callbacks with a timeout (#207)",
-  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/0aa528f60e59a2d7dee44a913c5abd07f4a9bc02"
+  "date": "2026-10-28T15:52:27+01:00",
+  "sha": "f5c583e9140e727cc9250fd80d934cf500596f74",
+  "subject": "rfd: restore the channel AES policy when devices are republished (#211)",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/f5c583e9140e727cc9250fd80d934cf500596f74"
  },
- "filtered_commits": 406,
- "generated": "2026-10-28 12:35 UTC",
+ "filtered_commits": 408,
+ "generated": "2026-10-28 18:32 UTC",
  "lite": "d771beda340ded1293ac3a1903372791a7b6a377",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "0aa528f60e59a2d7dee44a913c5abd07f4a9bc02"
+ "upstream_main": "f5c583e9140e727cc9250fd80d934cf500596f74"
 }
