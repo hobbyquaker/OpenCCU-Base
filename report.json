@@ -1,15 +1,26 @@
 {
- "above": [],
+ "above": [
+  {
+   "author": "Jens Maus",
+   "date": "2026-10-28T23:28:15+01:00",
+   "filtered": "0676969c678c86078df3a44574b96b2f6a30da2e",
+   "new": true,
+   "pr": 258,
+   "subject": "rfd: compile the exit RPC method only with DEBUG_SHUTDOWN (#258)",
+   "upstream": "4f606c6edc53d4b9be85c359a5d8abdcf49e18fe",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4f606c6edc53d4b9be85c359a5d8abdcf49e18fe"
+  }
+ ],
  "boundary": {
-  "date": "2026-10-28T15:52:27+01:00",
-  "sha": "f5c583e9140e727cc9250fd80d934cf500596f74",
-  "subject": "rfd: restore the channel AES policy when devices are republished (#211)",
-  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/f5c583e9140e727cc9250fd80d934cf500596f74"
+  "date": "2026-10-28T23:03:17+01:00",
+  "sha": "1b1143c8b71fcee73df46bac082e982932b3fe68",
+  "subject": "hs485d: create the channels of a new device with their channel class (#209)",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/1b1143c8b71fcee73df46bac082e982932b3fe68"
  },
- "filtered_commits": 408,
- "generated": "2026-10-28 18:32 UTC",
+ "filtered_commits": 411,
+ "generated": "2026-10-29 00:50 UTC",
  "lite": "d771beda340ded1293ac3a1903372791a7b6a377",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
- "skipped_below": 4,
- "upstream_main": "f5c583e9140e727cc9250fd80d934cf500596f74"
+ "skipped_below": 5,
+ "upstream_main": "4f606c6edc53d4b9be85c359a5d8abdcf49e18fe"
 }
