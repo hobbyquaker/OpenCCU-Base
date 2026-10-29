@@ -1,15 +1,26 @@
 {
- "above": [],
+ "above": [
+  {
+   "author": "Jens Maus",
+   "date": "2026-10-29T16:32:33+01:00",
+   "filtered": "741f171f59321c60b6e9ca043536367d53490959",
+   "new": true,
+   "pr": 260,
+   "subject": "rfd: do not terminate on, and refuse, JSON values with empty members (#260)",
+   "upstream": "d64c76f2feb4d92a38b733a97d565d2589ce57a6",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/d64c76f2feb4d92a38b733a97d565d2589ce57a6"
+  }
+ ],
  "boundary": {
   "date": "2026-10-28T23:28:15+01:00",
   "sha": "4f606c6edc53d4b9be85c359a5d8abdcf49e18fe",
   "subject": "rfd: compile the exit RPC method only with DEBUG_SHUTDOWN (#258)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4f606c6edc53d4b9be85c359a5d8abdcf49e18fe"
  },
- "filtered_commits": 411,
- "generated": "2026-10-29 09:30 UTC",
+ "filtered_commits": 412,
+ "generated": "2026-10-29 18:32 UTC",
  "lite": "bbf9880a588ae23c35cacd8795b57cdb8cae5a74",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "170c2712f77d1a9811bcf2a3e27462f710f2db42"
+ "upstream_main": "d64c76f2feb4d92a38b733a97d565d2589ce57a6"
 }
