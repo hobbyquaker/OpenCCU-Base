@@ -1,15 +1,36 @@
 {
- "above": [],
+ "above": [
+  {
+   "author": "Jens Maus",
+   "date": "2026-10-30T17:21:26+01:00",
+   "filtered": "1a677de02c1cf89cbf95adbcf3ad4e3e998d2af3",
+   "new": true,
+   "pr": 269,
+   "subject": "libelvutils: join an actor's thread only once and mark it running in Start() (#269)",
+   "upstream": "3cee2feb66ff01ebeeedc9cbab77bf6601306487",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/3cee2feb66ff01ebeeedc9cbab77bf6601306487"
+  },
+  {
+   "author": "Jens Maus",
+   "date": "2026-10-30T17:08:40+01:00",
+   "filtered": "0e3dc67724770c9753c5cdf277e542beb4e365a5",
+   "new": true,
+   "pr": 267,
+   "subject": "libelvutils, hs485d: refuse a hex file without data (#267)",
+   "upstream": "703ec920f08dc9af59cd1f04a0c7ad3953676107",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/703ec920f08dc9af59cd1f04a0c7ad3953676107"
+  }
+ ],
  "boundary": {
   "date": "2026-10-30T07:29:18+01:00",
   "sha": "a34913fd5a85d20fed4106e7e1b4f3e3f062f59f",
   "subject": "rfd: do not read past the duty cycle threshold map (#266)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/a34913fd5a85d20fed4106e7e1b4f3e3f062f59f"
  },
- "filtered_commits": 415,
- "generated": "2026-10-30 12:35 UTC",
+ "filtered_commits": 417,
+ "generated": "2026-10-30 18:28 UTC",
  "lite": "788ad7509b4ee8a3a5aa21c7844ea35eaf1778b7",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "022a35c662aaf3e9196628ec88ab031b74df2d16"
+ "upstream_main": "3cee2feb66ff01ebeeedc9cbab77bf6601306487"
 }
