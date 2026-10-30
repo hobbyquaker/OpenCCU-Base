@@ -1,55 +1,14 @@
 {
- "above": [
-  {
-   "author": "Jens Maus",
-   "date": "2026-10-30T07:29:18+01:00",
-   "filtered": "b293cfbf151c06665ecf5cbdaaa4905907cbdd40",
-   "new": true,
-   "pr": 266,
-   "subject": "rfd: do not read past the duty cycle threshold map (#266)",
-   "upstream": "a34913fd5a85d20fed4106e7e1b4f3e3f062f59f",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/a34913fd5a85d20fed4106e7e1b4f3e3f062f59f"
-  },
-  {
-   "author": "Jens Maus",
-   "date": "2026-10-29T23:27:05+01:00",
-   "filtered": "19859e1008144601be3cb4f326c434171f9e255e",
-   "new": false,
-   "pr": 268,
-   "subject": "libhsscomm: keep the string alive in type_conversion_string_unsigned_integer (#268)",
-   "upstream": "9ed78fe45bb16281d4bec46603f06ffa1f7134b2",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/9ed78fe45bb16281d4bec46603f06ffa1f7134b2"
-  },
-  {
-   "author": "Jens Maus",
-   "date": "2026-10-29T22:10:48+01:00",
-   "filtered": "bd2fa7a33fbb95b0f9691e0e42db6d3a049c4f52",
-   "new": false,
-   "pr": 263,
-   "subject": "libelvutils: read configuration lines of any length (#263)",
-   "upstream": "d679ef31044ae63944e849f538cdd4692f1ad1f1",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/d679ef31044ae63944e849f538cdd4692f1ad1f1"
-  },
-  {
-   "author": "Jens Maus",
-   "date": "2026-10-29T16:32:33+01:00",
-   "filtered": "741f171f59321c60b6e9ca043536367d53490959",
-   "new": false,
-   "pr": 260,
-   "subject": "rfd: do not terminate on, and refuse, JSON values with empty members (#260)",
-   "upstream": "d64c76f2feb4d92a38b733a97d565d2589ce57a6",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/d64c76f2feb4d92a38b733a97d565d2589ce57a6"
-  }
- ],
+ "above": [],
  "boundary": {
-  "date": "2026-10-28T23:28:15+01:00",
-  "sha": "4f606c6edc53d4b9be85c359a5d8abdcf49e18fe",
-  "subject": "rfd: compile the exit RPC method only with DEBUG_SHUTDOWN (#258)",
-  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4f606c6edc53d4b9be85c359a5d8abdcf49e18fe"
+  "date": "2026-10-30T07:29:18+01:00",
+  "sha": "a34913fd5a85d20fed4106e7e1b4f3e3f062f59f",
+  "subject": "rfd: do not read past the duty cycle threshold map (#266)",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/a34913fd5a85d20fed4106e7e1b4f3e3f062f59f"
  },
  "filtered_commits": 415,
- "generated": "2026-10-30 06:39 UTC",
- "lite": "bbf9880a588ae23c35cacd8795b57cdb8cae5a74",
+ "generated": "2026-10-30 12:35 UTC",
+ "lite": "788ad7509b4ee8a3a5aa21c7844ea35eaf1778b7",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
  "upstream_main": "022a35c662aaf3e9196628ec88ab031b74df2d16"
