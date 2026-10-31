@@ -1,15 +1,15 @@
 {
  "above": [],
  "boundary": {
-  "date": "2026-10-31T00:15:21+01:00",
-  "sha": "efb620975ada689a24a26fcf21e0ff35d74df97e",
-  "subject": "rfd: read the RSSI of the module's send status as a signed byte (#254)",
-  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/efb620975ada689a24a26fcf21e0ff35d74df97e"
+  "date": "2026-10-31T12:08:28+01:00",
+  "sha": "30ad06eb015f3140ffe2e5f16291166c42df6242",
+  "subject": "hs485d: synchronize LGW controller lifetime during reconnect (#265)",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/30ad06eb015f3140ffe2e5f16291166c42df6242"
  },
- "filtered_commits": 420,
- "generated": "2026-10-31 00:43 UTC",
- "lite": "788ad7509b4ee8a3a5aa21c7844ea35eaf1778b7",
+ "filtered_commits": 424,
+ "generated": "2026-10-31 12:29 UTC",
+ "lite": "26ea73ea464f2a26b94436eb75c4594a519d0bf5",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
- "skipped_below": 7,
- "upstream_main": "efb620975ada689a24a26fcf21e0ff35d74df97e"
+ "skipped_below": 5,
+ "upstream_main": "30ad06eb015f3140ffe2e5f16291166c42df6242"
 }
