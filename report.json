@@ -2,9 +2,19 @@
  "above": [
   {
    "author": "Jens Maus",
+   "date": "2026-11-02T12:09:43+01:00",
+   "filtered": "b15b675701879260c4b73d642fd00ef762548800",
+   "new": true,
+   "pr": 294,
+   "subject": "add a version to every program and library (#294)",
+   "upstream": "98c9cd1d2c5f62897b9315b239a42758dfc63339",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/98c9cd1d2c5f62897b9315b239a42758dfc63339"
+  },
+  {
+   "author": "Jens Maus",
    "date": "2026-11-01T12:40:02+01:00",
    "filtered": "ce98dbdeeef5f69a9d12ef581d2128233573bf9b",
-   "new": true,
+   "new": false,
    "pr": 291,
    "subject": "rfd 2.6.8, hs485d 1.4.0 (#291)",
    "upstream": "ad4ee2af618c501c7070e5a3c48b1f5821ecdafd",
@@ -14,7 +24,7 @@
    "author": "Jens Maus",
    "date": "2026-11-01T11:29:18+01:00",
    "filtered": "32c5a5b487a84ae688e0dcc683f0bd295ee201b8",
-   "new": true,
+   "new": false,
    "pr": 287,
    "subject": "hs485d: forget a replacement when the old device is added again (#287)",
    "upstream": "60dbdc7e81996cd17acd9105a6a249be64b12fd4",
@@ -24,7 +34,7 @@
    "author": "Sebastian Raff",
    "date": "2026-11-01T11:28:30+01:00",
    "filtered": "e12cde3374c6077d5537a50960fc0d9d4d05f601",
-   "new": true,
+   "new": false,
    "pr": 255,
    "subject": "rfd, hs485d: handle SIGTERM and SIGINT with a clean shutdown (#255)",
    "upstream": "58acf7330bb806add9e1ef507e6d8c844c14db04",
@@ -34,7 +44,7 @@
    "author": "Jens Maus",
    "date": "2026-11-01T09:55:33+01:00",
    "filtered": "672be48e320670eb77ceaa9953533f1b5d3a0fb4",
-   "new": true,
+   "new": false,
    "pr": 217,
    "subject": "hs485d, webui: add restoreConfigToDevice for BidCos-Wired (#217)",
    "upstream": "483a6dce354802217cfe9e489e63eaa482adedf9",
@@ -77,10 +87,10 @@
   "subject": "libXmlRpc: do not log an interrupted select() as an error (#281)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/a75ab04ee7aa33b012e00cf7f487650214ed3127"
  },
- "filtered_commits": 433,
- "generated": "2026-11-02 00:45 UTC",
+ "filtered_commits": 434,
+ "generated": "2026-11-02 12:31 UTC",
  "lite": "3558fb5510b320f532da66404cae8af73e665a5b",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "01e400772731935043a472057fe7709f8dd5d5d2"
+ "upstream_main": "98c9cd1d2c5f62897b9315b239a42758dfc63339"
 }
