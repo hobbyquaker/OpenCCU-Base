@@ -1,15 +1,26 @@
 {
- "above": [],
+ "above": [
+  {
+   "author": "Jens Maus",
+   "date": "2026-11-02T19:53:35+01:00",
+   "filtered": "aee5142c6d901458f3957f0ee7d7dddbd3957182",
+   "new": true,
+   "pr": 296,
+   "subject": "add a changelog to every component (#296)",
+   "upstream": "2047961dd768b48e950aa4d478dfacbd3b90e5fb",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/2047961dd768b48e950aa4d478dfacbd3b90e5fb"
+  }
+ ],
  "boundary": {
   "date": "2026-11-02T12:09:43+01:00",
   "sha": "98c9cd1d2c5f62897b9315b239a42758dfc63339",
   "subject": "add a version to every program and library (#294)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/98c9cd1d2c5f62897b9315b239a42758dfc63339"
  },
- "filtered_commits": 434,
- "generated": "2026-11-02 18:29 UTC",
+ "filtered_commits": 435,
+ "generated": "2026-11-02 21:51 UTC",
  "lite": "c208f979b3a253d007c3437c3a91e7ce9a48cd36",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "62753fc9320fb0c5122daab36f4f08c26902160d"
+ "upstream_main": "7c274d4d6d9105eb921d4f3b08c4623a24d640c4"
 }
