@@ -2,9 +2,19 @@
  "above": [
   {
    "author": "Jens Maus",
+   "date": "2026-11-04T15:40:09+01:00",
+   "filtered": "d0bc7a918f456fd0219cf85431762dc0f7d66405",
+   "new": true,
+   "pr": 310,
+   "subject": "rfd, hs485d: link the upstream pull requests of the CMake and poll() entries (#310)",
+   "upstream": "7365a95abd59b04666eb8c6b54e24cb018ce4268",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/7365a95abd59b04666eb8c6b54e24cb018ce4268"
+  },
+  {
+   "author": "Jens Maus",
    "date": "2026-11-02T19:53:35+01:00",
    "filtered": "aee5142c6d901458f3957f0ee7d7dddbd3957182",
-   "new": true,
+   "new": false,
    "pr": 296,
    "subject": "add a changelog to every component (#296)",
    "upstream": "2047961dd768b48e950aa4d478dfacbd3b90e5fb",
@@ -17,10 +27,10 @@
   "subject": "add a version to every program and library (#294)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/98c9cd1d2c5f62897b9315b239a42758dfc63339"
  },
- "filtered_commits": 435,
- "generated": "2026-11-04 12:31 UTC",
+ "filtered_commits": 436,
+ "generated": "2026-11-04 18:28 UTC",
  "lite": "c208f979b3a253d007c3437c3a91e7ce9a48cd36",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "96da0f574775917200b7c9c0e55d960499205e43"
+ "upstream_main": "7365a95abd59b04666eb8c6b54e24cb018ce4268"
 }
