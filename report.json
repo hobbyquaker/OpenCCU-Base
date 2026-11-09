@@ -2,9 +2,19 @@
  "above": [
   {
    "author": "Jens Maus",
+   "date": "2026-11-09T09:05:56+01:00",
+   "filtered": "bbf0c5a3e1d1955ddf5bf3a4ceadc7f7e1f84026",
+   "new": true,
+   "pr": 337,
+   "subject": "webui: keep hm_autoconf, hm_deldev and hm_startup in sync with bin/ (#337)",
+   "upstream": "42d2dc10e13ec13f32e0d60c94a425b3a097afb2",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/42d2dc10e13ec13f32e0d60c94a425b3a097afb2"
+  },
+  {
+   "author": "Jens Maus",
    "date": "2026-11-08T20:30:59+01:00",
    "filtered": "3a727d045d0fdc12bd1f0eb42a24a6394f7bf5da",
-   "new": true,
+   "new": false,
    "pr": 335,
    "subject": "devicetypes: add empty MASTER paramset to HM-Sen-RD-O heating channel (#335)",
    "upstream": "4ed9483516fa51bbf1c7866e453d418df02b6f03",
@@ -17,10 +27,10 @@
   "subject": "add the human authors to the component changelog entries (#309)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/b6ada9e0e020ae69942e02391da697ce1756ac2e"
  },
- "filtered_commits": 438,
- "generated": "2026-11-09 00:46 UTC",
+ "filtered_commits": 439,
+ "generated": "2026-11-09 12:31 UTC",
  "lite": "9f2a0811640b0ce4c9a30f457c41714bf4b78a86",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "7ab075f39f5a67f2b2f50fdacb1dccaaf7c49d8b"
+ "upstream_main": "c22c1d1cf5b321cb9813e09c1275d44118169778"
 }
