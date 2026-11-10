@@ -145,6 +145,67 @@ class Boundary(unittest.TestCase):
         self.assertEqual(rep["above"][0]["url"], "https://github.com/OpenCCU/OpenCCU-Base/commit/" + c[8])
         self.assertEqual(rep["skipped_below"], 1)
 
+    def openccu(self, release_pin, master_pin):
+        """a run told what OpenCCU builds: (the result, report.json, the page)"""
+        out = tempfile.mkdtemp(dir=self.tmp.name)
+        a = self.args(None, "2026-02-01")
+        a.out = out
+        a.openccu_release, a.openccu_master = "9.9.9.20260101", "f" * 40
+        for name, pin in (("release", release_pin), ("master", master_pin)):
+            mk = os.path.join(out, name + ".mk")
+            with open(mk, "w", encoding="utf-8") as f:
+                f.write("# OpenCCU-Base package\nOPENCCU_BASE_VERSION = %s\nOPENCCU_BASE_COMPAT_VERSION = 0\n" % pin)
+            setattr(a, "openccu_%s_mk" % name, mk)
+        res = report.build(a)
+        with open(os.path.join(out, "report.json"), encoding="utf-8") as f:
+            rep = json.load(f)
+        return res, rep, read(os.path.join(out, "index.html"))
+
+    def test_openccu_builds(self):
+        c = self.c
+        # the release builds the tag v1 (c4, below our line), master the head of main
+        res, rep, page = self.openccu("v1", c[9])
+        self.assertEqual(res["missing"], {"release": [], "master": [c[8]]})
+        self.assertEqual(rep["openccu"]["release"], {
+            "openccu": "9.9.9.20260101", "name": "OpenCCU 9.9.9.20260101", "pin": "v1", "commit": c[4],
+            "url": "https://github.com/OpenCCU/OpenCCU/releases/tag/9.9.9.20260101"})
+        self.assertEqual(rep["openccu"]["master"]["commit"], c[9])
+        self.assertEqual(rep["openccu"]["master"]["url"], "https://github.com/OpenCCU/OpenCCU/commit/" + "f" * 40)
+        self.assertEqual((rep["above"][0]["in_release"], rep["above"][0]["in_master"]), (False, True))
+        # master's mark is above the commit it has, the release's below our line at its tag's commit
+        master, line, release = (page.index('<li class="mark">── <a href="https://github.com/OpenCCU/OpenCCU/commit/'),
+                                 page.index("our fork's lite is here"),
+                                 page.index('<li class="mark">── <a href="https://github.com/OpenCCU/OpenCCU/releases/tag/'))
+        self.assertLess(master, page.index("core: after lite"))
+        self.assertLess(page.index("core: after lite"), line)
+        self.assertLess(line, release)
+        self.assertLess(release, page.index("core: picked with a line"))
+        self.assertIn('<span class="b mas">in OpenCCU master</span>', page)
+        self.assertNotIn('class="b rel"', page)
+
+    def test_openccu_release_ahead_of_lite(self):
+        c = self.c
+        # a release that builds a commit above our line: that one is what a released OpenCCU has and lite lacks
+        res, rep, page = self.openccu(c[8], c[9])
+        self.assertEqual(res["missing"], {"release": [c[8]], "master": [c[8]]})
+        self.assertEqual((rep["above"][0]["in_release"], rep["above"][0]["in_master"]), (True, True))
+        self.assertIn('<span class="b rel">in OpenCCU 9.9.9.20260101</span>', page)
+        self.assertNotIn('class="b mas"', page)
+
+    def test_openccu_pin_unknown(self):
+        # a pin the clone does not have (a commit of another branch): nothing counted, said on the page
+        res, rep, page = self.openccu("v1", "0" * 40)
+        self.assertEqual(res["missing"], {"release": [], "master": []})
+        self.assertIsNone(rep["openccu"]["master"]["commit"])
+        self.assertEqual(rep["above"][0]["in_master"], False)
+        self.assertIn("not compared", page)
+
+    def test_without_openccu(self):
+        with open(os.path.join(self.out, "report.json"), encoding="utf-8") as f:
+            rep = json.load(f)
+        self.assertEqual(rep["openccu"], {})
+        self.assertEqual(self.res["missing"], {})
+
     def test_new_marks(self):
         self.assertEqual(self.res["new"], [])
         state = os.path.join(self.out, "state.json")

@@ -18,7 +18,10 @@ name: filtered
 #
 # The report (.github/filtered/report.py) goes to the branch `gh-pages`, served by GitHub Pages:
 # the filtered commits newest first with a line where the fork's `lite` stands, and which commits
-# are new. state.json there remembers which upstream commits earlier runs have seen; report.json
+# are new. Upstream's main runs ahead of OpenCCU, so the report also says what OpenCCU builds: the run
+# reads OPENCCU_BASE_VERSION from OpenCCU/OpenCCU's openccu-base.mk as of its latest release and as of
+# its master, and the report marks both in the list and says for every commit above our line whether
+# the release or master has it (only what the release has and lite lacks is behind a released OpenCCU). state.json there remembers which upstream commits earlier runs have seen; report.json
 # holds the line and the commits above it for machines (openccu-lite's daily version report).
 #
 # This workflow lives on `main` only because scheduled workflows run from the default branch.
@@ -41,6 +44,8 @@ env:
   PATHS_REPO: hobbyquaker/openccu-lite
   PATHS_REF: main
   PATHS_FILE: buildroot-external/package/openccu-base/openccu-base-paths.txt
+  OPENCCU_REPO: OpenCCU/OpenCCU
+  OPENCCU_MK: buildroot-external/package/openccu-base/openccu-base.mk
   # git-filter-repo is one Python file; pinned by tag and checksum so the filter stays deterministic.
   FILTER_REPO_VERSION: v2.47.0
   FILTER_REPO_SHA256: 67447413e273fc76809289111748870b6f6072f08b17efe94863a92d810b7d94
@@ -81,6 +86,23 @@ jobs:
           curl -fsSL -o paths.txt "https://raw.githubusercontent.com/${PATHS_REPO}/${sha}/${PATHS_FILE}"
           echo "PATHS_COMMIT=$sha" >> "$GITHUB_ENV"
           echo "path list: ${PATHS_REPO}@${sha} $(sha256sum < paths.txt | cut -c1-16)"
+
+      - name: Fetch what OpenCCU builds
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # the release marked Latest (never a pre-release) and the head of the default branch
+          release=$(gh api "repos/${OPENCCU_REPO}/releases/latest" --jq .tag_name)
+          branch=$(gh api "repos/${OPENCCU_REPO}" --jq .default_branch)
+          master=$(gh api "repos/${OPENCCU_REPO}/commits/${branch}" --jq .sha)
+          [ -n "$release" ] && [ "$release" != null ] && [ -n "$master" ] && [ "$master" != null ]
+          curl -fsSL -o openccu-release.mk "https://raw.githubusercontent.com/${OPENCCU_REPO}/${release}/${OPENCCU_MK}"
+          curl -fsSL -o openccu-master.mk "https://raw.githubusercontent.com/${OPENCCU_REPO}/${master}/${OPENCCU_MK}"
+          echo "OPENCCU_RELEASE=$release" >> "$GITHUB_ENV"
+          echo "OPENCCU_MASTER=$master" >> "$GITHUB_ENV"
+          echo "OpenCCU ${release}: $(grep '^OPENCCU_BASE_VERSION' openccu-release.mk)"
+          echo "OpenCCU ${branch} ${master}: $(grep '^OPENCCU_BASE_VERSION' openccu-master.mk)"
 
       - name: Clone upstream and the fork's lite
         run: |
@@ -150,6 +172,8 @@ jobs:
             --paths ../paths.txt --paths-commit "$PATHS_COMMIT" \
             --exclude ../tools/.github/filtered/exclude-paths.txt \
             --paths-url "https://github.com/${PATHS_REPO}/blob/${PATHS_COMMIT}/${PATHS_FILE}" \
+            --openccu-release "$OPENCCU_RELEASE" --openccu-release-mk ../openccu-release.mk \
+            --openccu-master "$OPENCCU_MASTER" --openccu-master-mk ../openccu-master.mk \
             --fork "$GITHUB_REPOSITORY" --state-in ../state-in.json --out .
           touch .nojekyll
           mv summary.md ../summary.md

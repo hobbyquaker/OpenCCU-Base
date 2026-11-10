@@ -13,7 +13,8 @@ the fork's `lite`, and writes:
     a commit stays marked "new" until a later run brings newer ones;
   - report.json: the page's facts for machines (openccu-lite's daily version report reads it): where
     lite stands (the boundary) and the commits above the line, newest first, each with its upstream
-    commit, subject, PR, date and author;
+    commit, subject, PR, date and author, and whether OpenCCU builds it (in_release, in_master);
+    "openccu" names the two OpenCCU builds;
   - summary.md: the run's summary for $GITHUB_STEP_SUMMARY.
 
 "Taken by lite" (the boundary detection) is, per upstream commit:
@@ -26,6 +27,14 @@ the fork's `lite`, and writes:
      suffix (upstream squash-merges a PR of ours under the PR's title; the review may have changed
      the diff, so the patch-id differs).
 The boundary is the taken upstream commit that is newest in upstream's order.
+
+What OpenCCU builds: upstream's main runs ahead of OpenCCU, which pins an OpenCCU-Base tag or commit
+in its buildroot-external/package/openccu-base/openccu-base.mk (OPENCCU_BASE_VERSION). The run hands
+over that file as of OpenCCU's latest release and as of its master; each pin is resolved here, and a
+commit above the line is "in the release" or "in master" when it is the pin's commit or an ancestor
+of it. Only the first is something a released OpenCCU has and lite lacks. The page marks both pins
+in the list ("builds OpenCCU-Base up to here"). A pin that names nothing in the upstream clone (a
+commit of another branch) has no commit: nothing is counted for it, and the page says so.
 """
 
 import argparse
@@ -43,6 +52,8 @@ TRAILER = re.compile(r"^Upstream-Commit: \S+ " + re.escape(UPSTREAM) + r"/commit
 PICKED = re.compile(r"\(cherry picked from commit ([0-9a-f]{40})\)")
 LITE_TRAILER = re.compile(r"^Upstream(?:-Commit)?: .*?([0-9a-f]{40})", re.M)
 PR = re.compile(r"\(#(\d+)\)\s*$")
+OPENCCU = "https://github.com/OpenCCU/OpenCCU"
+MK_VERSION = re.compile(r"^OPENCCU_BASE_VERSION[ \t]*:?=[ \t]*(\S+)[ \t]*$", re.M)
 
 
 def git(repo, *args, data=None):
@@ -149,6 +160,34 @@ def taken_by_lite(upstream, main, lite, paths, filtered_repo, commits):
     return taken, boundary, index
 
 
+def openccu_build(upstream, key, ref, mk):
+    """One OpenCCU build: `ref` is OpenCCU's release tag (key "release") or the commit of its master
+    (key "master"), `mk` its openccu-base.mk. Returns the build with its pin, the upstream commit
+    the pin names (None when the clone has none) and that commit's ancestors, itself included."""
+    with open(mk, encoding="utf-8") as f:
+        m = MK_VERSION.search(f.read())
+    if not m:
+        raise SystemExit("%s: no OPENCCU_BASE_VERSION" % mk)
+    pin = m.group(1)
+    r = subprocess.run(["git", "-C", upstream, "rev-parse", "--verify", "--quiet", pin + "^{commit}"],
+                       capture_output=True)
+    commit = r.stdout.decode().strip() if r.returncode == 0 else None
+    if key == "release":
+        name, url = "OpenCCU " + ref, "%s/releases/tag/%s" % (OPENCCU, ref)
+    else:
+        name, url = "OpenCCU master", "%s/commit/%s" % (OPENCCU, ref)
+    return {"key": key, "openccu": ref, "name": name, "url": url, "pin": pin, "commit": commit,
+            "has": set(git(upstream, "rev-list", commit).split()) if commit else set()}
+
+
+def pin_html(b):
+    """the pin as a link: a tag by its name, a commit by its short id"""
+    text = b["pin"][:10] if re.fullmatch(r"[0-9a-f]{40}", b["pin"]) else b["pin"]
+    if not b["commit"]:
+        return "<code>%s</code>" % esc(text)
+    return '<a href="%s/commit/%s"><code>%s</code></a>' % (UPSTREAM, b["commit"], esc(text))
+
+
 def esc(s):
     return html.escape(s, quote=True)
 
@@ -162,7 +201,7 @@ def subject_html(subject):
     return s
 
 
-def entry_html(c, fork, taken, new, tags):
+def entry_html(c, fork, taken, new, tags, builds=()):
     u = c["upstream"]
     cls = ["c"]
     badges = []
@@ -171,6 +210,12 @@ def entry_html(c, fork, taken, new, tags):
     if not c.get("above") and u not in taken:
         cls.append("skipped")
         badges.append('<span class="b out">not in lite</span>')
+    if c.get("above"):
+        # the first build that has it: the release before master
+        for b in builds:
+            if u in b["has"]:
+                badges.append('<span class="b %s">in %s</span>' % ("rel" if b["key"] == "release" else "mas", esc(b["name"])))
+                break
     for t in tags.get(c["sha"], []):
         badges.append('<span class="b tag">%s</span>' % esc(t))
     files = "".join(
@@ -201,7 +246,9 @@ ol{list-style:none;margin:0;padding:0}.c{border:1px solid var(--line);background
 details{font-size:.85em}summary{cursor:pointer;color:var(--mut)}.files{margin:4px 0 0;padding-left:18px}.files li{overflow-wrap:anywhere}
 .add{color:var(--add)}.del{color:var(--del)}
 .b{display:inline-block;font-size:.75em;font-weight:600;border:1px solid currentColor;border-radius:10px;padding:0 7px;margin-left:4px;white-space:nowrap}
-.b.new{color:var(--new)}.b.out{color:var(--in)}.b.tag{color:var(--tag)}
+.b.new{color:var(--new)}.b.out{color:var(--in)}.b.tag{color:var(--tag)}.b.rel{color:var(--del)}.b.mas{color:var(--mut)}
+.mark{margin:12px 0;padding:4px 12px;border-top:1px dashed var(--mut);color:var(--mut);font-size:.9em;font-weight:600;overflow-wrap:anywhere}
+.mark a{color:var(--mut)}
 .sep{margin:24px 0;padding:10px 12px;border-top:3px solid var(--sep);border-bottom:3px solid var(--sep);color:var(--sep);font-weight:600;overflow-wrap:anywhere}
 .sep a{color:var(--sep)}.note{color:var(--mut);font-size:.9em}
 """
@@ -255,12 +302,43 @@ def build(args):
     skipped = [c for c in below if c["upstream"] not in taken]
     older = below[:OLDER_CAP]
 
+    fork = args.fork
+    builds = []
+    for key, ref, mk in (("release", getattr(args, "openccu_release", None), getattr(args, "openccu_release_mk", None)),
+                         ("master", getattr(args, "openccu_master", None), getattr(args, "openccu_master_mk", None))):
+        if ref and mk:
+            b = openccu_build(args.upstream, key, ref, mk)
+            b["missing"] = [c for c in above if c["upstream"] in b["has"]]
+            builds.append(b)
+    # where each build stands in the list: before the newest filtered commit it has
+    marks = {}
+    for b in builds:
+        for c in commits:
+            if c["upstream"] in b["has"]:
+                marks.setdefault(c["sha"], []).append(b)
+                break
+
+    def listed(cs):
+        out = []
+        for c in cs:
+            for b in marks.get(c["sha"], []):
+                out.append('<li class="mark">── <a href="%s">%s</a> builds OpenCCU-Base %s: up to here ──</li>'
+                           % (esc(b["url"]), esc(b["name"]), pin_html(b)))
+            out.append(entry_html(c, fork, taken, new, tags, builds))
+        return out
+
+    def build_fact(b):
+        if not b["commit"]:
+            return ('<a href="%s">%s</a> builds OpenCCU-Base %s, which is no commit of upstream\'s main or tags: not compared'
+                    % (esc(b["url"]), esc(b["name"]), pin_html(b)))
+        return ('<a href="%s">%s</a> builds OpenCCU-Base %s: %d of the commits above the line are in it'
+                % (esc(b["url"]), esc(b["name"]), pin_html(b), len(b["missing"])))
+
     binfo = None
     if boundary:
         s, d = git(args.upstream, "log", "-1", "--format=%s%x1f%aI", boundary).strip().split("\x1f")
         binfo = {"sha": boundary, "subject": s, "date": d}
 
-    fork = args.fork
     up_head = git(args.upstream, "rev-parse", args.main).strip()
     lite_head = git(args.upstream, "rev-parse", args.lite).strip()
     gen = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -279,13 +357,17 @@ def build(args):
         "<h1>OpenCCU-Base, filtered to openccu-lite's paths</h1>",
         "<p class=\"lead\">Upstream <a href=\"%s/commits/main\">OpenCCU/OpenCCU-Base main</a> limited to the "
         "paths openccu-lite builds from (minus the few left out below), newest first. Above the line: what upstream did after the newest commit "
-        "our fork's <code>lite</code> has (none of them is in <code>lite</code>); below it: the older ones (the latest %d), those <code>lite</code> skipped marked <em>not in lite</em>. The full history is the branch "
+        "our fork's <code>lite</code> has (none of them is in <code>lite</code>); below it: the older ones (the latest %d), those <code>lite</code> skipped marked <em>not in lite</em>. "
+        "Upstream's main runs ahead of OpenCCU: the dashed lines show up to where OpenCCU's latest release and its master build OpenCCU-Base, "
+        "and a commit above our line says which of the two has it. The full history is the branch "
         "<a href=\"https://github.com/%s/commits/filtered\"><code>filtered</code></a>.</p>" % (UPSTREAM, OLDER_CAP, fork),
         "<dl class=\"facts\">",
         "<dt>Generated</dt><dd>%s</dd>" % gen,
         "<dt>Upstream main</dt><dd><a href=\"%s/commit/%s\"><code>%s</code></a> (%d commits, %d filtered)</dd>"
         % (UPSTREAM, up_head, up_head[:10], len(index), len(commits)),
         "<dt>Fork lite</dt><dd><a href=\"https://github.com/%s/commit/%s\"><code>%s</code></a></dd>" % (fork, lite_head, lite_head[:10]),
+    ] + ["<dt>%s</dt><dd>%s</dd>" % ("OpenCCU release" if b["key"] == "release" else "OpenCCU master", build_fact(b))
+         for b in builds] + [
         "<dt>Paths file</dt><dd><a href=\"%s\">openccu-base-paths.txt</a> at <code>%s</code></dd>"
         % (esc(args.paths_url), esc(args.paths_commit[:10])),
         "<dt>Left out</dt><dd>%s</dd>" % (", ".join("<code>%s</code>" % esc(x) for x in left_out) or "nothing"),
@@ -293,11 +375,11 @@ def build(args):
         "<dt>New</dt><dd>%s</dd>" % (("%d, first seen %s" % (len(new), esc(last_new_date))) if new else "none since the first run"),
         "</dl><ol>",
     ]
-    page += [entry_html(c, fork, taken, new, tags) for c in above]
+    page += listed(above)
     if not above:
         page.append("<li class=\"note\">Nothing upstream after it.</li>")
     page.append("</ol><div class=\"sep\">%s</div><ol>" % sep)
-    page += [entry_html(c, fork, taken, new, tags) for c in older]
+    page += listed(older)
     page.append("</ol>")
     if len(below) > len(older):
         page.append("<p class=\"note\">%d older filtered commits are on the branch "
@@ -317,12 +399,16 @@ def build(args):
         m = PR.search(c["subject"])
         return {"upstream": c["upstream"], "url": "%s/commit/%s" % (UPSTREAM, c["upstream"]),
                 "filtered": c["sha"], "subject": c["subject"], "pr": int(m.group(1)) if m else None,
-                "date": c["date"], "author": c["author"], "new": c["upstream"] in new}
+                "date": c["date"], "author": c["author"], "new": c["upstream"] in new,
+                "in_release": any(b["key"] == "release" and c["upstream"] in b["has"] for b in builds),
+                "in_master": any(b["key"] == "master" and c["upstream"] in b["has"] for b in builds)}
     with open(os.path.join(args.out, "report.json"), "w", encoding="utf-8") as f:
         json.dump({"generated": gen,
                    "upstream_main": up_head, "lite": lite_head,
                    "boundary": dict(binfo, url="%s/commit/%s" % (UPSTREAM, binfo["sha"])) if binfo else None,
                    "above": [entry(c) for c in above], "skipped_below": len(skipped),
+                   "openccu": {b["key"]: {"openccu": b["openccu"], "name": b["name"], "url": b["url"],
+                                          "pin": b["pin"], "commit": b["commit"]} for b in builds},
                    "filtered_commits": len(commits), "paths_commit": args.paths_commit},
                   f, indent=1, sort_keys=True)
         f.write("\n")
@@ -331,7 +417,12 @@ def build(args):
           "- upstream main `%s`: %d commits, %d filtered" % (up_head[:10], len(index), len(commits)),
           "- paths file at `%s`" % args.paths_commit[:10],
           "- lite stands at: %s" % ("[%s](%s/commit/%s)" % (binfo["subject"], UPSTREAM, binfo["sha"]) if binfo else "unknown"),
-          "- above it (not in lite): %d filtered commits; below it, skipped by lite: %d" % (len(above), len(skipped)), ""]
+          "- above it (not in lite): %d filtered commits; below it, skipped by lite: %d" % (len(above), len(skipped))]
+    for b in builds:
+        md.append("- %s builds OpenCCU-Base `%s`: %s" % (
+            b["name"], b["pin"][:10] if b["commit"] and b["pin"] == b["commit"] else b["pin"],
+            "%d of the commits above the line are in it" % len(b["missing"]) if b["commit"] else "no commit of upstream's main or tags, not compared"))
+    md.append("")
     if first_run:
         md.append("First run: every commit recorded as seen, none marked new.")
     elif fresh:
@@ -345,6 +436,7 @@ def build(args):
     with open(os.path.join(args.out, "summary.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(md) + "\n")
     return {"taken": taken, "boundary": boundary, "above": [c["upstream"] for c in above],
+            "missing": {b["key"]: [c["upstream"] for c in b["missing"]] for b in builds},
             "skipped": [c["upstream"] for c in skipped],
             "fresh": fresh, "new": sorted(new)}
 
@@ -362,6 +454,10 @@ def main(argv=None):
     p.add_argument("--exclude", help="the exclude file the filter's second pass used")
     p.add_argument("--fork", default="hobbyquaker/OpenCCU-Base")
     p.add_argument("--state-in")
+    p.add_argument("--openccu-release", help="the tag of OpenCCU's latest release")
+    p.add_argument("--openccu-release-mk", help="OpenCCU's openccu-base.mk at that tag")
+    p.add_argument("--openccu-master", help="the commit of OpenCCU's master")
+    p.add_argument("--openccu-master-mk", help="OpenCCU's openccu-base.mk at that commit")
     p.add_argument("--run-date", default=datetime.date.today().isoformat())
     p.add_argument("--out", required=True)
     build(p.parse_args(argv))
