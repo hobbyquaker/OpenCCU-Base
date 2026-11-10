@@ -4,6 +4,8 @@
    "author": "Jens Maus",
    "date": "2026-11-09T21:29:05+01:00",
    "filtered": "3a63d986ceab9546e4e75f637d5d479c2bc347ae",
+   "in_master": true,
+   "in_release": false,
    "new": true,
    "pr": 342,
    "subject": "licenses: note the copyright of the OpenCCU images (#342)",
@@ -14,6 +16,8 @@
    "author": "Jens Maus",
    "date": "2026-11-09T17:20:26+01:00",
    "filtered": "38bf730c0e16a814efd2db95fc95287ecf817d45",
+   "in_master": true,
+   "in_release": false,
    "new": false,
    "pr": 340,
    "subject": "webui: CodeMirror 6 script editor (OpenCCU patch 0046) (#340)",
@@ -24,6 +28,8 @@
    "author": "Jens Maus",
    "date": "2026-11-09T09:05:56+01:00",
    "filtered": "bbf0c5a3e1d1955ddf5bf3a4ceadc7f7e1f84026",
+   "in_master": true,
+   "in_release": false,
    "new": false,
    "pr": 337,
    "subject": "webui: keep hm_autoconf, hm_deldev and hm_startup in sync with bin/ (#337)",
@@ -38,9 +44,25 @@
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4ed9483516fa51bbf1c7866e453d418df02b6f03"
  },
  "filtered_commits": 441,
- "generated": "2026-11-10 06:33 UTC",
+ "generated": "2026-11-10 10:15 UTC",
  "lite": "af69afa3ca54f7d655c3ea5b9679ada38a70ffeb",
+ "openccu": {
+  "master": {
+   "commit": "79d0a44a2848e732a0f730a90e31f88209878e06",
+   "name": "OpenCCU master",
+   "openccu": "23503022710f8df7148b9a4f3ee0927f74859c97",
+   "pin": "79d0a44a2848e732a0f730a90e31f88209878e06",
+   "url": "https://github.com/OpenCCU/OpenCCU/commit/23503022710f8df7148b9a4f3ee0927f74859c97"
+  },
+  "release": {
+   "commit": "3ed652a404d72cbe403e37c5b8b1f610451b02fb",
+   "name": "OpenCCU 3.89.11.20260919",
+   "openccu": "3.89.11.20260919",
+   "pin": "3.89.11",
+   "url": "https://github.com/OpenCCU/OpenCCU/releases/tag/3.89.11.20260919"
+  }
+ },
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "281a862a00185213b809b5ab8420d9768b2240ff"
+ "upstream_main": "eda669f4a76e97f88a90f1b92fb6140ee6c36f08"
 }
