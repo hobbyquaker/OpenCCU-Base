@@ -2,9 +2,19 @@
  "above": [
   {
    "author": "Jens Maus",
+   "date": "2026-11-09T21:29:05+01:00",
+   "filtered": "3a63d986ceab9546e4e75f637d5d479c2bc347ae",
+   "new": true,
+   "pr": 342,
+   "subject": "licenses: note the copyright of the OpenCCU images (#342)",
+   "upstream": "79d0a44a2848e732a0f730a90e31f88209878e06",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/79d0a44a2848e732a0f730a90e31f88209878e06"
+  },
+  {
+   "author": "Jens Maus",
    "date": "2026-11-09T17:20:26+01:00",
    "filtered": "38bf730c0e16a814efd2db95fc95287ecf817d45",
-   "new": true,
+   "new": false,
    "pr": 340,
    "subject": "webui: CodeMirror 6 script editor (OpenCCU patch 0046) (#340)",
    "upstream": "0730658ca476131ca309b2a390ec7d4431da055d",
@@ -27,10 +37,10 @@
   "subject": "devicetypes: add empty MASTER paramset to HM-Sen-RD-O heating channel (#335)",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4ed9483516fa51bbf1c7866e453d418df02b6f03"
  },
- "filtered_commits": 440,
- "generated": "2026-11-09 18:28 UTC",
+ "filtered_commits": 441,
+ "generated": "2026-11-10 00:42 UTC",
  "lite": "af69afa3ca54f7d655c3ea5b9679ada38a70ffeb",
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 4,
- "upstream_main": "bd9964b1ee5031f9731418ac1f075c5fcb562d49"
+ "upstream_main": "79d0a44a2848e732a0f730a90e31f88209878e06"
 }
