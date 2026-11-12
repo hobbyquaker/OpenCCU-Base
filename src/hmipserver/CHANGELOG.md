@@ -12,13 +12,16 @@ OpenCCU-Base release they are part of when it is published.
   eQ-3, together with `HMServer.jar` and `coupling/ESHBridge.jar`
   (homematicip/OpenCCU-Base#16). (@cn-eq3)
   * an XML-RPC event receiver that accepts a connection and never answers no
-    longer holds up the events for all other receivers: each call times out
-    after 10 seconds and the receiver is dropped (OpenCCU/OpenCCU-Base#192);
+    longer holds up the events for the other receivers, also while it hangs in
+    the device list of its own `init`; each call to it now times out after
+    `Legacy.Client.Socket.Timeout` (600 seconds in the shipped `crRFD.conf`)
+    (OpenCCU/OpenCCU-Base#192);
   * a repeated `init` no longer leaves a connection and its file descriptors
     behind (OpenCCU/OpenCCU-Base#36);
   * `HMServer.jar`, which a system without an HmIP radio module runs for its
     virtual devices, is now built from the same 1.5.1 code base as
-    `HMIPServer.jar` (Java 21), so it has the two fixes above as well;
+    `HMIPServer.jar` (Java 21); unlike the previous one it stops at its start
+    when BidCos-RF is configured and rfd does not answer;
   * new device descriptions: HmIP-DRI2 (input module for DIN rail mount,
     2 channels) and HmIP-SMS2 (switch actuator for surface mounting,
     2 channels, so far only known as ELV-SH-SMS2);
