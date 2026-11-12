@@ -4,7 +4,7 @@
    "author": "Jens Maus",
    "date": "2026-11-12T17:12:46+01:00",
    "filtered": "188afc92a32ec5b71f9873bd48ff9481cc777f7a",
-   "in_master": false,
+   "in_master": true,
    "in_release": false,
    "new": true,
    "pr": 357,
@@ -16,7 +16,7 @@
    "author": "Jens Maus",
    "date": "2026-11-12T10:06:31Z",
    "filtered": "c57888287820a0a8181c4308c6d1ab8379ebfd5d",
-   "in_master": false,
+   "in_master": true,
    "in_release": false,
    "new": true,
    "pr": null,
@@ -28,7 +28,7 @@
    "author": "Jens Maus",
    "date": "2026-11-12T10:06:15Z",
    "filtered": "d8cda04e75c50348060896a75e0ba2778266f40e",
-   "in_master": false,
+   "in_master": true,
    "in_release": false,
    "new": true,
    "pr": null,
@@ -40,7 +40,7 @@
    "author": "Jens Maus",
    "date": "2026-11-12T10:22:47+01:00",
    "filtered": "402c1c4e97d9d7622ae31e2b93fdd4c5f83aeb88",
-   "in_master": false,
+   "in_master": true,
    "in_release": false,
    "new": true,
    "pr": null,
@@ -56,15 +56,15 @@
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/96137bc1acbb53efafd1902fd9edc5699549c6d0"
  },
  "filtered_commits": 446,
- "generated": "2026-11-12 16:22 UTC",
+ "generated": "2026-11-12 18:29 UTC",
  "lite": "40f3c141544e851c63b690b46222f8192e79ec21",
  "openccu": {
   "master": {
-   "commit": "53d9dfae6947aa695c80f2d632541cb3ae56a475",
+   "commit": "d12f703ae3436d49b4728bc258547d5523ea7826",
    "name": "OpenCCU master",
-   "openccu": "26a89feeef7046e65f0930642d1b01c3d83beeb4",
-   "pin": "53d9dfae6947aa695c80f2d632541cb3ae56a475",
-   "url": "https://github.com/OpenCCU/OpenCCU/commit/26a89feeef7046e65f0930642d1b01c3d83beeb4"
+   "openccu": "9343d117386a5adab8c1641a25da6d0e089dfb8e",
+   "pin": "d12f703ae3436d49b4728bc258547d5523ea7826",
+   "url": "https://github.com/OpenCCU/OpenCCU/commit/9343d117386a5adab8c1641a25da6d0e089dfb8e"
   },
   "release": {
    "commit": "3ed652a404d72cbe403e37c5b8b1f610451b02fb",
