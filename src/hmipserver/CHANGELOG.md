@@ -8,20 +8,26 @@ OpenCCU-Base release they are part of when it is published.
 
 ## Unreleased
 
+* `crRFD.conf`: lower `Legacy.Client.Socket.Timeout` from 600000 to 30000 ms,
+  so a call to an XML-RPC event receiver that accepts the connection and
+  never answers ends after 30 seconds instead of 10 minutes. (@hobbyquaker)
 * update `HMIPServer.jar` to version 1.5.1 (build 6137 of 2026-11-12) from
   eQ-3, together with `HMServer.jar` and `coupling/ESHBridge.jar`
   (homematicip/OpenCCU-Base#16). (@cn-eq3)
   * an XML-RPC event receiver that accepts a connection and never answers no
     longer holds up the events for the other receivers, also while it hangs in
     the device list of its own `init`; each call to it now times out after
-    `Legacy.Client.Socket.Timeout` (600 seconds in the shipped `crRFD.conf`)
-    (OpenCCU/OpenCCU-Base#192);
+    `Legacy.Client.Socket.Timeout` (OpenCCU/OpenCCU-Base#192); the receiver is
+    not dropped after such a timeout and is called again with the next event;
   * a repeated `init` no longer leaves a connection and its file descriptors
     behind (OpenCCU/OpenCCU-Base#36);
   * `HMServer.jar`, which a system without an HmIP radio module runs for its
     virtual devices, is now built from the same 1.5.1 code base as
-    `HMIPServer.jar` (Java 21); unlike the previous one it stops at its start
-    when BidCos-RF is configured and rfd does not answer;
+    `HMIPServer.jar` (Java 21);
+  * both `HMIPServer.jar` and `HMServer.jar` now read the device lists of rfd
+    and hs485d once at their start, for the virtual devices, and do not finish
+    their start while a configured one does not answer (the previous jars
+    started without them);
   * new device descriptions: HmIP-DRI2 (input module for DIN rail mount,
     2 channels) and HmIP-SMS2 (switch actuator for surface mounting,
     2 channels, so far only known as ELV-SH-SMS2);
