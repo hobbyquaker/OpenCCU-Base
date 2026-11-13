@@ -8,6 +8,10 @@ OpenCCU-Base release they are part of when it is published.
 
 ## Unreleased
 
+* `crRFD.conf`: lower `Legacy.Client.Connection.Timeout` from 600000 to 10000
+  ms, so a call to an XML-RPC event receiver whose host drops the connection
+  attempt gives up after 10 seconds (with 1.5.2 it took the 30 seconds of
+  `Legacy.Client.Socket.Timeout`). (@hobbyquaker)
 * update `HMIPServer.jar` to version 1.5.2-SNAPSHOT (build 6140 of
   2026-11-13) from eQ-3, together with `HMServer.jar` and
   `coupling/ESHBridge.jar` (homematicip/OpenCCU-Base#17). (@cn-eq3)
