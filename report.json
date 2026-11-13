@@ -2,11 +2,23 @@
  "above": [
   {
    "author": "Jens Maus",
+   "date": "2026-11-12T22:35:12+01:00",
+   "filtered": "e64652baf7cfa29e1f8138cd4f87933d0449f659",
+   "in_master": true,
+   "in_release": false,
+   "new": true,
+   "pr": 359,
+   "subject": "hmipserver: lower Legacy.Client.Socket.Timeout to 30 s (#359)",
+   "upstream": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/6582e906c89c01368cc3b6876027e1abe97f4c9e"
+  },
+  {
+   "author": "Jens Maus",
    "date": "2026-11-12T17:12:46+01:00",
    "filtered": "188afc92a32ec5b71f9873bd48ff9481cc777f7a",
    "in_master": true,
    "in_release": false,
-   "new": true,
+   "new": false,
    "pr": 357,
    "subject": "hmipserver: update HMIPServer.jar to 1.5.1 from homematicip/OpenCCU-Base (#357)",
    "upstream": "d12f703ae3436d49b4728bc258547d5523ea7826",
@@ -18,7 +30,7 @@
    "filtered": "c57888287820a0a8181c4308c6d1ab8379ebfd5d",
    "in_master": true,
    "in_release": false,
-   "new": true,
+   "new": false,
    "pr": null,
    "subject": "hmipserver: add the changes of HMIPServer.jar 1.5.1 to the changelog",
    "upstream": "756e89416cbb7af320375c93edae35fccf21e0bc",
@@ -30,7 +42,7 @@
    "filtered": "d8cda04e75c50348060896a75e0ba2778266f40e",
    "in_master": true,
    "in_release": false,
-   "new": true,
+   "new": false,
    "pr": null,
    "subject": "Merge branch 'homematicip:main' into main",
    "upstream": "75ab1c88926aae7d22529fd2172909e2bf6755d6",
@@ -42,7 +54,7 @@
    "filtered": "402c1c4e97d9d7622ae31e2b93fdd4c5f83aeb88",
    "in_master": true,
    "in_release": false,
-   "new": true,
+   "new": false,
    "pr": null,
    "subject": "Merge pull request #16 from homematicip/feature/HmIPServer-1.5.1",
    "upstream": "d1c30b31ebd4d97c5fd250205d293ad9e42328d5",
@@ -55,16 +67,16 @@
   "subject": "Update HmIPServer to 1.5.1",
   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/96137bc1acbb53efafd1902fd9edc5699549c6d0"
  },
- "filtered_commits": 446,
- "generated": "2026-11-12 18:29 UTC",
+ "filtered_commits": 447,
+ "generated": "2026-11-13 00:44 UTC",
  "lite": "40f3c141544e851c63b690b46222f8192e79ec21",
  "openccu": {
   "master": {
-   "commit": "d12f703ae3436d49b4728bc258547d5523ea7826",
+   "commit": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
    "name": "OpenCCU master",
-   "openccu": "9343d117386a5adab8c1641a25da6d0e089dfb8e",
-   "pin": "d12f703ae3436d49b4728bc258547d5523ea7826",
-   "url": "https://github.com/OpenCCU/OpenCCU/commit/9343d117386a5adab8c1641a25da6d0e089dfb8e"
+   "openccu": "001d434779256fd342a58763dc4d9efb866e8260",
+   "pin": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
+   "url": "https://github.com/OpenCCU/OpenCCU/commit/001d434779256fd342a58763dc4d9efb866e8260"
   },
   "release": {
    "commit": "3ed652a404d72cbe403e37c5b8b1f610451b02fb",
@@ -76,5 +88,5 @@
  },
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
  "skipped_below": 7,
- "upstream_main": "d12f703ae3436d49b4728bc258547d5523ea7826"
+ "upstream_main": "6582e906c89c01368cc3b6876027e1abe97f4c9e"
 }
