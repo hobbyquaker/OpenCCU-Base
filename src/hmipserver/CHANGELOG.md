@@ -8,61 +8,54 @@ OpenCCU-Base release they are part of when it is published.
 
 ## Unreleased
 
-* `crRFD.conf`: lower `Legacy.Client.Connection.Timeout` from 600000 to 10000
-  ms, so a call to an XML-RPC event receiver whose host drops the connection
-  attempt gives up after 10 seconds (with 1.5.2 it took the 30 seconds of
-  `Legacy.Client.Socket.Timeout`). (@hobbyquaker)
 * update `HMIPServer.jar` to version 1.5.2-SNAPSHOT (build 6140 of
-  2026-11-13) from eQ-3, together with `HMServer.jar` and
-  `coupling/ESHBridge.jar` (homematicip/OpenCCU-Base#17). (@cn-eq3)
-  * both jars finish their start again while rfd or hs485d does not answer,
-    as the jars before 1.5.1 did, retry the registration with them every 5
-    seconds (with a logged stack trace each time) and take them up when they
-    come back, without a restart (OpenCCU/OpenCCU-Base#358);
-  * an XML-RPC event receiver whose calls fail three times in a row is now
-    removed (`Legacy.RemoveUnreachableClients`, on by default), so it is no
-    longer called again with every event; a call already sent to it still
-    runs into its timeout first. A receiver that hangs in the device list of
-    its own `init` no longer holds up the `init` of other receivers
-    (OpenCCU/OpenCCU-Base#192);
-  * a repeated `init` on the virtual devices no longer keeps every previous
-    registration for good: what it leaves behind is freed by the next full
-    garbage collection (OpenCCU/OpenCCU-Base#36);
-  * no new or changed device descriptions; `ESHBridge.jar` without a code
-    change.
-* `crRFD.conf`: lower `Legacy.Client.Socket.Timeout` from 600000 to 30000 ms,
-  so a call to an XML-RPC event receiver that accepts the connection and
-  never answers ends after 30 seconds instead of 10 minutes. (@hobbyquaker)
+  2026-11-13) from eQ-3. The server again finishes its start while rfd does
+  not answer (e.g. a BidCos LAN gateway that is off at boot) and picks rfd
+  up later; with 1.5.1 the start stopped, so `HmIP-RF`, `VirtualDevices`
+  and the heating groups stayed down until the server was restarted
+  ([homematicip#17](https://github.com/homematicip/OpenCCU-Base/pull/17),
+  [#358](https://github.com/OpenCCU/OpenCCU-Base/issues/358), @cn-eq3).
+* `HmIP-RF` now removes a registered XML-RPC client after 3 failed calls in
+  a row (can be switched off with `Legacy.RemoveUnreachableClients=false`),
+  so a client that hangs no longer gets every further event for the full
+  `Legacy.Client.Socket.Timeout`, and the `listDevices` calls to newly
+  registered clients run in parallel, so a hanging client no longer holds
+  up the registration of others
+  ([homematicip#17](https://github.com/homematicip/OpenCCU-Base/pull/17),
+  [#192](https://github.com/OpenCCU/OpenCCU-Base/issues/192), @cn-eq3).
+* a registration on `VirtualDevices` is no longer kept for ever after it
+  was replaced, so its HTTP client can be freed again; it is not closed
+  explicitly yet, so its thread and file descriptors stay until the Java
+  garbage collector runs
+  ([homematicip#17](https://github.com/homematicip/OpenCCU-Base/pull/17),
+  [#36](https://github.com/OpenCCU/OpenCCU-Base/issues/36), @cn-eq3).
+* lower `Legacy.Client.Socket.Timeout` in the `crRFD.conf` template from
+  600 s to 30 s. Since `HMIPServer.jar` 1.5.1 this is the answer timeout
+  of every call to a registered XML-RPC client: a receiver that accepts
+  the connection but does not answer held up the registration of other
+  clients for 10 minutes and logged a blocked-thread warning every second
+  meanwhile; now it gives up after 30 s
+  ([#359](https://github.com/OpenCCU/OpenCCU-Base/pull/359),
+  [#192](https://github.com/OpenCCU/OpenCCU-Base/issues/192), @jens-maus).
 * update `HMIPServer.jar` to version 1.5.1 (build 6137 of 2026-11-12) from
-  eQ-3, together with `HMServer.jar` and `coupling/ESHBridge.jar`
-  (homematicip/OpenCCU-Base#16). (@cn-eq3)
-  * an XML-RPC event receiver that accepts a connection and never answers no
-    longer holds up the events for the other receivers, also while it hangs in
-    the device list of its own `init`; each call to it now times out after
-    `Legacy.Client.Socket.Timeout` (OpenCCU/OpenCCU-Base#192); the receiver is
-    not dropped after such a timeout and is called again with the next event;
-  * a repeated `init` no longer leaves a connection and its file descriptors
-    behind (OpenCCU/OpenCCU-Base#36);
-  * `HMServer.jar`, which a system without an HmIP radio module runs for its
-    virtual devices, is now built from the same 1.5.1 code base as
-    `HMIPServer.jar` (Java 21);
-  * both `HMIPServer.jar` and `HMServer.jar` now read the device lists of rfd
-    and hs485d once at their start, for the virtual devices, and do not finish
-    their start while a configured one does not answer (the previous jars
-    started without them);
-  * new device descriptions: HmIP-DRI2 (input module for DIN rail mount,
-    2 channels) and HmIP-SMS2 (switch actuator for surface mounting,
-    2 channels, so far only known as ELV-SH-SMS2);
-  * updated device descriptions for the firmware from 1.2.0 on, the previous
-    description kept for older firmware: ELV-SH-CAP, ELV-SH-CTH, ELV-SH-CTV
-    (low battery limit, cyclic status messages), HmIP-FCI6 (alarm zones, event
-    delay, LED and low battery settings), HmIPW-SCTHD (display content, heating
-    and cooling enable on the temperature channel); ELV-SH-TACO the same from
-    firmware 1.4.0 on (cyclic status messages);
-  * updated device descriptions: HmIP-MIOB (up to 20 instead of 7 links on the
-    climate control input channel), HmIP-ESI-IND now reports its device type as
-    HmIP-ESI-I;
-  * `ESHBridge.jar` without a code change.
+  eQ-3. A call from `HmIP-RF` to a registered XML-RPC client now times out
+  after `Legacy.Client.Socket.Timeout` (10 s if unset) instead of waiting
+  forever for a client that accepted the connection but never answers, and
+  a client gets events only after its `listDevices` succeeded
+  ([homematicip#16](https://github.com/homematicip/OpenCCU-Base/pull/16),
+  fixes [#192](https://github.com/OpenCCU/OpenCCU-Base/issues/192), @cn-eq3).
+* `HmIP-RF` now retries the `listDevices` call to a newly registered client
+  every 30 s while it fails, instead of dropping the client after the first
+  failure, so a client whose callback port opens a moment late (e.g. the
+  bridge of `VirtualDevices`, `HmIP-RF_java`, on a busy start) is no longer
+  lost until the next restart
+  ([homematicip#16](https://github.com/homematicip/OpenCCU-Base/pull/16),
+  fixes [#180](https://github.com/OpenCCU/OpenCCU-Base/issues/180), @cn-eq3).
+* a client that registers again on `HmIP-RF` with `init` (or deregisters)
+  no longer leaves its HTTP client with one thread and two file descriptors
+  behind. The same leak on `VirtualDevices` remains
+  ([homematicip#16](https://github.com/homematicip/OpenCCU-Base/pull/16),
+  [#36](https://github.com/OpenCCU/OpenCCU-Base/issues/36), @cn-eq3).
 * update `HMIPServer.jar` to the build of 2026-10-08 (build 5936, version
   1.5.1-SNAPSHOT) from eQ-3: avoid a security counter update with invalid
   values. (@cn-eq3)
