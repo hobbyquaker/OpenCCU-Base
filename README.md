@@ -24,10 +24,10 @@ Each component's `CHANGELOG.md` under `src/` says what changed in it.
 
 ## Comparison with upstream
 
-- **[The comparison page](https://hobbyquaker.github.io/OpenCCU-Base/)** lists OpenCCU-Base's commits in the components
+- **[The comparison page](https://openccu-lite.github.io/OpenCCU-Base/)** lists OpenCCU-Base's commits in the components
   openccu-lite ships, newest first, with a line where `lite` stands: what is above it has not been taken yet. It also
   says which of them OpenCCU's latest release and its master already have. It is refreshed every six hours.
-- [All differences between upstream's `main` and `lite`](https://github.com/OpenCCU/OpenCCU-Base/compare/main...hobbyquaker:OpenCCU-Base:lite)
+- [All differences between upstream's `main` and `lite`](https://github.com/OpenCCU/OpenCCU-Base/compare/main...openccu-lite:OpenCCU-Base:lite)
   on GitHub.
 - How openccu-lite as a whole differs from OpenCCU:
   [openccu-lite's upstream delta](https://github.com/hobbyquaker/openccu-lite/blob/main/docs/upstream-delta.md).

@@ -452,7 +452,7 @@ def main(argv=None):
     p.add_argument("--paths-url", default="")
     p.add_argument("--paths-commit", default="")
     p.add_argument("--exclude", help="the exclude file the filter's second pass used")
-    p.add_argument("--fork", default="hobbyquaker/OpenCCU-Base")
+    p.add_argument("--fork", default="openccu-lite/OpenCCU-Base")
     p.add_argument("--state-in")
     p.add_argument("--openccu-release", help="the tag of OpenCCU's latest release")
     p.add_argument("--openccu-release-mk", help="OpenCCU's openccu-base.mk at that tag")
