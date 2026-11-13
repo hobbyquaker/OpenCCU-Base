@@ -255,5 +255,21 @@ class OutOfOrder(unittest.TestCase):
             self.assertLess(page.index("core: b"), page.index("not in lite</span>", sep))
 
 
+
+class Badge(unittest.TestCase):
+    """the README badge (no git needed)"""
+
+    def test_up_to_date(self):
+        self.assertEqual(report.badge([]), {"schemaVersion": 1, "label": "OpenCCU-Base",
+                                            "message": "up to date", "color": "brightgreen"})
+
+    def test_to_take(self):
+        b = report.badge([{"in_release": False, "in_master": True}, {"in_release": False}])
+        self.assertEqual((b["message"], b["color"]), ("2 to take", "yellow"))
+
+    def test_released(self):
+        b = report.badge([{"in_release": True}, {"in_release": False}, {"in_release": True}])
+        self.assertEqual((b["message"], b["color"]), ("3 to take, 2 released", "orange"))
+
 if __name__ == "__main__":
     unittest.main()

@@ -181,7 +181,7 @@ jobs:
           cat ../summary.md >> "$GITHUB_STEP_SUMMARY"
           owner=${GITHUB_REPOSITORY%%/*}
           echo "Report: https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_STEP_SUMMARY"
-          git add index.html state.json report.json .nojekyll
+          git add index.html state.json report.json badge.json .nojekyll
           # a new generation time alone is not worth a commit
           if git diff --cached --quiet -I '<dt>Generated</dt>' -I '"generated": ' && git rev-parse -q --verify HEAD >/dev/null; then
             echo "report unchanged"

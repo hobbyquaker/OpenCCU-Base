@@ -15,6 +15,9 @@ the fork's `lite`, and writes:
     lite stands (the boundary) and the commits above the line, newest first, each with its upstream
     commit, subject, PR, date and author, and whether OpenCCU builds it (in_release, in_master);
     "openccu" names the two OpenCCU builds;
+  - badge.json: a shields.io endpoint badge for the READMEs (label "OpenCCU-Base"): "up to date" when nothing is
+    above the line, else the number of commits above it, orange when OpenCCU's latest release already has one of
+    them, yellow otherwise;
   - summary.md: the run's summary for $GITHUB_STEP_SUMMARY.
 
 "Taken by lite" (the boundary detection) is, per upstream commit:
@@ -413,6 +416,10 @@ def build(args):
                   f, indent=1, sort_keys=True)
         f.write("\n")
 
+    with open(os.path.join(args.out, "badge.json"), "w", encoding="utf-8") as f:
+        json.dump(badge([entry(c) for c in above]), f, sort_keys=True)
+        f.write("\n")
+
     md = ["### OpenCCU-Base filtered", "",
           "- upstream main `%s`: %d commits, %d filtered" % (up_head[:10], len(index), len(commits)),
           "- paths file at `%s`" % args.paths_commit[:10],
@@ -439,6 +446,18 @@ def build(args):
             "missing": {b["key"]: [c["upstream"] for c in b["missing"]] for b in builds},
             "skipped": [c["upstream"] for c in skipped],
             "fresh": fresh, "new": sorted(new)}
+
+
+def badge(above):
+    """the shields.io endpoint badge for report.json's "above" entries"""
+    b = {"schemaVersion": 1, "label": "OpenCCU-Base"}
+    if not above:
+        return dict(b, message="up to date", color="brightgreen")
+    released = sum(1 for e in above if e.get("in_release"))
+    msg = "%d to take" % len(above)
+    if released:
+        return dict(b, message="%s, %d released" % (msg, released), color="orange")
+    return dict(b, message=msg, color="yellow")
 
 
 def main(argv=None):
