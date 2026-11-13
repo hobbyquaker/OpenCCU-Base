@@ -8,6 +8,20 @@ OpenCCU-Base release they are part of when it is published.
 
 ## Unreleased
 
+* update `HMIPServer.jar` to version 1.5.2-SNAPSHOT (build 6140 of
+  2026-11-13) from eQ-3, together with `HMServer.jar` and
+  `coupling/ESHBridge.jar` (homematicip/OpenCCU-Base#17). (@cn-eq3)
+  * both jars finish their start again while rfd does not answer, as the
+    jars before 1.5.1 did (OpenCCU/OpenCCU-Base#358);
+  * an XML-RPC event receiver whose calls fail three times in a row is now
+    removed (`Legacy.RemoveUnreachableClients`, on by default), so it is no
+    longer called again with every event; a receiver that hangs in the device
+    list of its own `init` no longer holds up the `init` of other receivers
+    (OpenCCU/OpenCCU-Base#192);
+  * a repeated `init` on the virtual devices no longer keeps every previous
+    registration for good (OpenCCU/OpenCCU-Base#36);
+  * no new or changed device descriptions; `ESHBridge.jar` without a code
+    change.
 * `crRFD.conf`: lower `Legacy.Client.Socket.Timeout` from 600000 to 30000 ms,
   so a call to an XML-RPC event receiver that accepts the connection and
   never answers ends after 30 seconds instead of 10 minutes. (@hobbyquaker)
