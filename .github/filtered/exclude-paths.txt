@@ -1,0 +1,14 @@
+# Left out of the branch `filtered` (and its report) although openccu-lite's path list keeps them:
+# noise for reading what upstream changed in the components openccu-lite ships. The build is not
+# affected - it prunes with openccu-lite's own list.
+#
+# git filter-repo's --paths-from-file format, applied as a second pass with --invert-paths: a commit
+# that touched only these paths vanishes, a mixed one keeps the rest.
+
+# everything of the WebUI's folder openccu-lite's list keeps (the device pictures and descriptions,
+# the DEVDB.tcl generators, the translations, the stringtable): openccu-lite installs them for
+# addons, but nearly every WebUI commit touches them
+src/webui/
+
+# ReGaHss's ChangeLog and README (the directory holds nothing else; openccu-lite ships no ReGaHss)
+src/ReGaHss/

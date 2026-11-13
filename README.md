@@ -1,48 +1,58 @@
-# OpenCCU-Base
+# OpenCCU-Base for openccu-lite
 
-`OpenCCU-Base` provides the base source code and binary files for the major runtime components required by the OpenCCU project.
+This is a fork of [OpenCCU/OpenCCU-Base](https://github.com/OpenCCU/OpenCCU-Base). Its branch `lite` is what
+[openccu-lite](https://github.com/hobbyquaker/openccu-lite) builds the Homematic interface processes from: `rfd`,
+`hs485d`, `multimacd` and their libraries, the HMIPServer jars, the device descriptions and the configuration
+templates. openccu-lite is a CCU firmware without ReGaHss and without the CCU WebUI, so those parts of this repository
+are not used there.
 
-It serves as the foundational layer for core Homematic / Homematic IP services, including native daemons, shared libraries, WebUI assets, startup scripts, and configuration templates that are assembled into OpenCCU firmware and runtime environments.
+The fork is meant to stay as close to OpenCCU-Base as possible. It is not a separate project: everything that is useful
+for OpenCCU goes upstream.
 
-## OpenCCU project links
+## What it carries
 
-- OpenCCU GitHub organization: https://github.com/OpenCCU
-- OpenCCU main repository: https://github.com/OpenCCU/OpenCCU
-- OpenCCU website: https://www.openccu.de/
+- **Upstream's changes to the components openccu-lite ships**, cherry-picked from OpenCCU-Base (`git cherry-pick -x`,
+  so every such commit names its upstream commit).
+- **Fixes that are on their way upstream.** They are offered to OpenCCU-Base as pull requests and stay here until
+  upstream has them.
+- **HMIPServer releases from eQ-3** ([homematicip/OpenCCU-Base](https://github.com/homematicip/OpenCCU-Base)), taken as
+  published, sometimes before OpenCCU takes them. Since HMIPServer 1.5.1 this fork uses eQ-3's `HMServer.jar` as well;
+  OpenCCU keeps its earlier one.
+- **A few configuration defaults** for openccu-lite, for example the XML-RPC timeouts in `crRFD.conf`.
 
-## Purpose
-With the release of OpenCCU-Base and thus essential components of the CCU source code, new and extended possibilities arise for OpenCCU and OpenCCU-LTS users regarding individual customizations, extensions, and participation in the OpenCCU projects.
-For example, adjustments to the WebUI are significantly simplified, and modifications to core components of the CCU software from eQ-3—such as the Homematic radio and wired services—are now possible.
-Furthermore, in keeping with the spirit of the OCCU project, components that cannot be published as source code, as well as the Homematic IP service, will continue to be updated regularly by eQ-3 and contributors.
+Each component's `CHANGELOG.md` under `src/` says what changed in it.
 
-This repository is used as the common base package that delivers:
+## Comparison with upstream
 
-- Native component binaries for multiple target architectures.
-- C/C++ source modules for key OpenCCU services and libraries.
-- WebUI resources and build/generation assets.
-- System scripts and default configuration templates.
-- Additional runtime artifacts used by Homematic IP server components.
+- **[The comparison page](https://hobbyquaker.github.io/OpenCCU-Base/)** lists OpenCCU-Base's commits in the components
+  openccu-lite ships, newest first, with a line where `lite` stands: what is above it has not been taken yet. It also
+  says which of them OpenCCU's latest release and its master already have. It is refreshed every six hours.
+- [All differences between upstream's `main` and `lite`](https://github.com/OpenCCU/OpenCCU-Base/compare/main...hobbyquaker:OpenCCU-Base:lite)
+  on GitHub.
+- How openccu-lite as a whole differs from OpenCCU:
+  [openccu-lite's upstream delta](https://github.com/hobbyquaker/openccu-lite/blob/main/docs/upstream-delta.md).
 
-## Repository layout (high level)
+## Branches and tags
 
-- `src/` - source code and module-local build logic (Makefiles) for core components.
-  Closed-source components (`src/ReGaHss/`, `src/hmipserver/`) only contain a `README.md` and their `CHANGELOG.md` there, their binaries are part of `bin/` and `opt/`.
-- `bin/` - architecture-specific executable binaries and helper/startup scripts.
-- `www/` - WebUI and Tcl-based runtime resources.
-- `etc/` - configuration templates used during deployment/runtime setup.
-- `opt/` - bundled server/runtime artifacts (including HMServer/HmIP related files).
-- `lib/`, `usr/`, `firmware/` - additional runtime libraries and firmware-related content.
+| Branch | Holds |
+| --- | --- |
+| `lite` | what openccu-lite builds (the default branch) |
+| `filtered` | upstream's history limited to the paths openccu-lite builds from; a read-only view, rewritten when the path list changes |
+| `gh-pages` | the comparison page |
+| `main` | an older copy of upstream's `main`; not maintained |
+| others | the branches of pull requests to OpenCCU-Base |
 
-## How this repository is typically used
+Every openccu-lite release tags the `lite` commit it was built from with its own version, for example `v2.0.0-beta.3`,
+and openccu-lite pins that tag.
 
-`OpenCCU-Base` is primarily consumed as part of the larger OpenCCU build and packaging pipeline.  
-Its module outputs are built/staged and then integrated into final OpenCCU images and update artifacts.
+## Issues
 
-In short: this repository is the component base layer that OpenCCU depends on for essential binaries, libraries, scripts, and configuration defaults.
+- Problems with openccu-lite: [openccu-lite's issues](https://github.com/hobbyquaker/openccu-lite/issues).
+- Problems in the components themselves that affect OpenCCU as well:
+  [OpenCCU-Base's issues](https://github.com/OpenCCU/OpenCCU-Base/issues).
 
-## License information
+## Licence
 
-This repository contains components under different licenses.
-
-- Main license references are available in `licenses/licenses.md`.
-- Additional bundled license texts are available in `licenses/` (for example `gpl-2.0.txt`, `lgpl-2.1.txt`, and `HMSL2.txt`).
+Unchanged from OpenCCU-Base: the components keep their licences, see [licenses/licenses.md](licenses/licenses.md) and
+the texts in [licenses/](licenses/). Upstream's own description of this repository is in
+[its README](https://github.com/OpenCCU/OpenCCU-Base/blob/main/README.md).
