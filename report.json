@@ -2,81 +2,81 @@
  "above": [
   {
    "author": "Jens Maus",
-   "date": "2026-11-12T22:35:12+01:00",
-   "filtered": "e64652baf7cfa29e1f8138cd4f87933d0449f659",
-   "in_master": true,
+   "date": "2026-11-13T12:36:16+01:00",
+   "filtered": "ad183bb48f52daf4e0a92ee8375152ba6831e0db",
+   "in_master": false,
    "in_release": false,
    "new": true,
-   "pr": 359,
-   "subject": "hmipserver: lower Legacy.Client.Socket.Timeout to 30 s (#359)",
-   "upstream": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/6582e906c89c01368cc3b6876027e1abe97f4c9e"
+   "pr": 360,
+   "subject": "hmipserver: update HMIPServer.jar to 1.5.2-SNAPSHOT from homematicip/OpenCCU-Base (#360)",
+   "upstream": "66e01a8daddec7557b265353b17235a08079bb65",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/66e01a8daddec7557b265353b17235a08079bb65"
   },
   {
    "author": "Jens Maus",
-   "date": "2026-11-12T17:12:46+01:00",
-   "filtered": "188afc92a32ec5b71f9873bd48ff9481cc777f7a",
-   "in_master": true,
+   "date": "2026-11-13T11:29:22Z",
+   "filtered": "38bdedbba1b39fd4272b291056f267726f6882e1",
+   "in_master": false,
    "in_release": false,
-   "new": false,
-   "pr": 357,
-   "subject": "hmipserver: update HMIPServer.jar to 1.5.1 from homematicip/OpenCCU-Base (#357)",
-   "upstream": "d12f703ae3436d49b4728bc258547d5523ea7826",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/d12f703ae3436d49b4728bc258547d5523ea7826"
-  },
-  {
-   "author": "Jens Maus",
-   "date": "2026-11-12T10:06:31Z",
-   "filtered": "c57888287820a0a8181c4308c6d1ab8379ebfd5d",
-   "in_master": true,
-   "in_release": false,
-   "new": false,
+   "new": true,
    "pr": null,
-   "subject": "hmipserver: add the changes of HMIPServer.jar 1.5.1 to the changelog",
-   "upstream": "756e89416cbb7af320375c93edae35fccf21e0bc",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/756e89416cbb7af320375c93edae35fccf21e0bc"
+   "subject": "hmipserver: link the pull request in the changelog entries",
+   "upstream": "55db0246b25eede7d6db006db05e2305ea92f7d0",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/55db0246b25eede7d6db006db05e2305ea92f7d0"
   },
   {
    "author": "Jens Maus",
-   "date": "2026-11-12T10:06:15Z",
-   "filtered": "d8cda04e75c50348060896a75e0ba2778266f40e",
-   "in_master": true,
+   "date": "2026-11-13T11:28:55Z",
+   "filtered": "511e0025005ccd11c2759c38d8edb9aadae73480",
+   "in_master": false,
    "in_release": false,
-   "new": false,
+   "new": true,
+   "pr": null,
+   "subject": "hmipserver: add the changes of HMIPServer.jar 1.5.2-SNAPSHOT to the changelog",
+   "upstream": "52e4df6a67067bf2494b6db5b43702b9267e4aeb",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/52e4df6a67067bf2494b6db5b43702b9267e4aeb"
+  },
+  {
+   "author": "Jens Maus",
+   "date": "2026-11-13T11:28:48Z",
+   "filtered": "cc9565c765762d125ae473a467cefac3231f43c2",
+   "in_master": false,
+   "in_release": false,
+   "new": true,
    "pr": null,
    "subject": "Merge branch 'homematicip:main' into main",
-   "upstream": "75ab1c88926aae7d22529fd2172909e2bf6755d6",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/75ab1c88926aae7d22529fd2172909e2bf6755d6"
+   "upstream": "4548a5eb02dab3bccce37938e84bfdc3fc29f559",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/4548a5eb02dab3bccce37938e84bfdc3fc29f559"
   },
   {
    "author": "Jens Maus",
-   "date": "2026-11-12T10:22:47+01:00",
-   "filtered": "402c1c4e97d9d7622ae31e2b93fdd4c5f83aeb88",
-   "in_master": true,
+   "date": "2026-11-13T12:28:22+01:00",
+   "filtered": "558f8006a723b641bd5ab21303e180c2db3fa449",
+   "in_master": false,
    "in_release": false,
-   "new": false,
+   "new": true,
    "pr": null,
-   "subject": "Merge pull request #16 from homematicip/feature/HmIPServer-1.5.1",
-   "upstream": "d1c30b31ebd4d97c5fd250205d293ad9e42328d5",
-   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/d1c30b31ebd4d97c5fd250205d293ad9e42328d5"
+   "subject": "Merge pull request #17 from homematicip/feature/HMIPServer-1.5.2-SNAPSHOT-2026-11-13",
+   "upstream": "756222fea5adcc600abda535d3af0d5ade07f670",
+   "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/756222fea5adcc600abda535d3af0d5ade07f670"
   }
  ],
  "boundary": {
-  "date": "2026-11-12T09:11:42+01:00",
-  "sha": "96137bc1acbb53efafd1902fd9edc5699549c6d0",
-  "subject": "Update HmIPServer to 1.5.1",
-  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/96137bc1acbb53efafd1902fd9edc5699549c6d0"
+  "date": "2026-11-13T10:54:21+01:00",
+  "sha": "a96850f225c26227b998253561913100cf4190e3",
+  "subject": "Update HMIPServer to 1.5.2-SNAPSHOT",
+  "url": "https://github.com/OpenCCU/OpenCCU-Base/commit/a96850f225c26227b998253561913100cf4190e3"
  },
- "filtered_commits": 447,
- "generated": "2026-11-13 05:19 UTC",
- "lite": "40f3c141544e851c63b690b46222f8192e79ec21",
+ "filtered_commits": 453,
+ "generated": "2026-11-13 12:31 UTC",
+ "lite": "578022ef0405368088ce72ce60298cc72cc3d389",
  "openccu": {
   "master": {
    "commit": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
    "name": "OpenCCU master",
-   "openccu": "19038be9e5302da11f33fe555d759ae7ef3376f1",
+   "openccu": "ef4ff3563753116b92f4e716c6ce74cf1cf9314f",
    "pin": "6582e906c89c01368cc3b6876027e1abe97f4c9e",
-   "url": "https://github.com/OpenCCU/OpenCCU/commit/19038be9e5302da11f33fe555d759ae7ef3376f1"
+   "url": "https://github.com/OpenCCU/OpenCCU/commit/ef4ff3563753116b92f4e716c6ce74cf1cf9314f"
   },
   "release": {
    "commit": "3ed652a404d72cbe403e37c5b8b1f610451b02fb",
@@ -87,6 +87,6 @@
   }
  },
  "paths_commit": "455c9bce9edb8cc9651b8ba18619f053458b146d",
- "skipped_below": 7,
- "upstream_main": "6582e906c89c01368cc3b6876027e1abe97f4c9e"
+ "skipped_below": 12,
+ "upstream_main": "66e01a8daddec7557b265353b17235a08079bb65"
 }
